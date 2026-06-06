@@ -1,11 +1,12 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
-  "remoteUser": "node",
-  "updateContentCommand": "sudo chown -R node .",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:24",
+  "remoteUser": "root",
+  "updateRemoteUserUID": false,
+  "mounts": ["source=/home/user/Vault/Blog,target=/workspaces/hblog-ng/vault,type=bind"],
   "customizations": {
     "vscode": {
       "extensions": [
-        "saoudrizwan.claude-dev",
+        "anthropic.claude-code",
         "davidanson.vscode-markdownlint",
         "christian-kohler.npm-intellisense"
       ]
