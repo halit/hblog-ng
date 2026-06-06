@@ -23,41 +23,32 @@ const blueItems = [
 ];
 
 const GlitchText: React.FC<GlitchTextProps> = ({ text, mode }) => {
-  const [localMode, setLocalMode] = useState<'offense' | 'defense'>('offense');
-  const [cycleIndex, setCycleIndex] = useState<number>(0);
+  // A single monotonic counter is the source of truth; mode and item index are
+  // derived from it. Keeping the updater pure avoids StrictMode's double-invoke
+  // advancing the index twice (which previously pinned offense to even indices).
+  const [tick, setTick] = useState<number>(0);
 
   useEffect(() => {
     if (mode) return; // if mode forced, don't toggle
     const interval = setInterval(() => {
-      setLocalMode((prev) => {
-        const nextMode = prev === 'offense' ? 'defense' : 'offense';
-
-        if (nextMode === 'offense') {
-          // Moving to red: increment cycle index
-          setCycleIndex((prevIndex) => prevIndex + 1);
-        }
-        // For blue, we use the current cycleIndex (no increment needed)
-
-        return nextMode;
-      });
+      setTick((prev) => prev + 1);
     }, 3000);
     return () => clearInterval(interval);
   }, [mode]);
 
-  // Calculate current text based on mode and cycle index
-  const currentText =
-    text ||
-    (localMode === 'offense'
-      ? redItems[cycleIndex % redItems.length]
-      : blueItems[cycleIndex % blueItems.length]);
+  // Even ticks = offense, odd ticks = defense. Each full offense→defense pair
+  // advances the cycle index by one, so every item is eventually shown.
+  const localMode: 'offense' | 'defense' = tick % 2 === 0 ? 'offense' : 'defense';
+  const cycleIndex = Math.floor(tick / 2);
 
   const currentMode = mode || localMode;
-  const content = text || currentText;
+  const items = currentMode === 'offense' ? redItems : blueItems;
+  const content = text || items[cycleIndex % items.length];
 
   return (
     <span className="relative inline-block align-bottom">
       <span
-        className={`glitch-text glitch-text-dynamic font-bold ${currentMode === 'offense' ? 'text-offense' : 'text-defense'}`}
+        className={`glitch-text glitch-text-dynamic font-bold whitespace-nowrap ${currentMode === 'offense' ? 'text-offense' : 'text-defense'}`}
         data-text={content}
         style={
           {
