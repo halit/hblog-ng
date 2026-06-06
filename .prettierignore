@@ -1,0 +1,11 @@
+# Don't reformat content or generated/build artifacts
+data/
+out/
+.next/
+.wrangler/
+node_modules/
+public/images/
+public/vault.json
+public/search-index.json
+package-lock.json
+*.min.*

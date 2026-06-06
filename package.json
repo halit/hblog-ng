@@ -33,7 +33,17 @@
     "format": "prettier --write .",
     "test": "vitest run --passWithNoTests",
     "parse-vault": "tsx scripts/parse-vault.ts",
-    "serve": "npx serve out"
+    "serve": "npx serve out",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,cjs}": [
+      "eslint --fix --no-warn-ignored",
+      "prettier --write"
+    ],
+    "*.{json,css,md,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "asciinema-player": "^3.12.1",
@@ -82,6 +92,8 @@
     "eslint-config-next": "^16.0.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
     "mermaid": "^10.9.5",
     "openpgp": "^6.2.2",
     "postcss": "^8.5.15",
