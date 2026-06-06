@@ -13,10 +13,12 @@ To keep sessions fast, **do not scan these** unless a task explicitly requires i
   `public/search-index.json`, `public/assets/`, `public/charts/`,
   `public/files/`, `public/mermaid/`, `public/signatures/`, `public/videos/`) —
   all rebuilt by `npm run prepare-data`
-- `vault/assets/**` — images, PDFs, and signatures (binary content)
+- `vault/assets/**` and `example-vault/assets/**` — images, PDFs, and signatures
+  (binary content)
 
 Source lives in `app/`, `components/`, `config/`, `hooks/`, `lib/`, `scripts/`,
-`types/`, and `utils/`. Vault **Markdown** (`vault/**/*.md`) is content, not code.
+`types/`, and `utils/`. Vault **Markdown** (`vault/**/*.md` and the bundled
+`example-vault/**/*.md`) is content, not code.
 
 ## Project overview
 
@@ -24,6 +26,13 @@ Source lives in `app/`, `components/`, `config/`, `hooks/`, `lib/`, `scripts/`,
 a statically-generated site with an interactive knowledge graph. Built with
 Next.js (App Router, static export) and deployed to Cloudflare Pages. There is
 **no server runtime** — everything is pre-rendered at build time.
+
+Vault content is **not committed to this repo**. It lives in a separate Obsidian
+vault, resolved by `scripts/lib/vault-path.ts` in this order: (1) the `VAULT_PATH`
+env var, (2) a `vault/` directory if present (the devcontainer bind-mounts one —
+see `.devcontainer/devcontainer.json`), (3) the bundled `example-vault/` demo so a
+fresh clone still renders. Always resolve the vault via `getVaultPath()` /
+`getVaultPathWithOverride()`; never hard-code `vault/`.
 
 ## Commands
 
@@ -39,14 +48,15 @@ npm run analyze          # Bundle-size visualization
 npm run sign-posts       # PGP-sign vault posts
 ```
 
-Run `npm run prepare-data` after changing anything under `vault/` before building.
+Run `npm run prepare-data` after changing vault content (the resolved vault or
+`example-vault/`) before building.
 
 ## Architecture
 
 ### Data flow
 
 ```text
-vault/ (Obsidian markdown)
+resolved vault (Obsidian markdown — VAULT_PATH | vault/ | example-vault/)
   └─ scripts/parse-vault.ts
        ├─ data/vault.json      (full, used by lib/vault.ts during SSG)
        └─ public/vault.json    (lite, fetched by client graph/search)
@@ -113,5 +123,7 @@ under `app/[type]/` using the `lib/page-logic.tsx` factories.
 ## Notes
 
 - `out/` is the deploy artifact — never edit it directly.
-- A missing or empty `vault/` no longer breaks the build; the pipeline writes
-  empty `data/*.json` so a fresh clone still builds.
+- Vault content is external (see [Project overview](#project-overview)); the
+  repo ships `example-vault/` as the fallback so a fresh clone renders the demo.
+- A missing or empty vault no longer breaks the build; the pipeline writes empty
+  `data/*.json` so even a vault wiped for personal use still builds.
