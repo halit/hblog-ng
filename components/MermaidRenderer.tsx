@@ -11,6 +11,7 @@ interface Mermaid {
 
 const MermaidRenderer = ({ code, title }: { code: string; title?: string }) => {
   const [error, setError] = useState<string | null>(null);
+  const [inlineSvg, setInlineSvg] = useState<string | null>(null);
   const [imageData, setImageData] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -126,6 +127,7 @@ const MermaidRenderer = ({ code, title }: { code: string; title?: string }) => {
       try {
         setIsLoading(true);
         setError(null);
+        setInlineSvg(null);
         setImageData(null);
 
         // Load Mermaid library
@@ -148,6 +150,16 @@ const MermaidRenderer = ({ code, title }: { code: string; title?: string }) => {
 
         // Wait a bit to ensure initialization
         await new Promise((resolve) => setTimeout(resolve, 100));
+
+        // Wait for web fonts to finish loading before rendering. Mermaid sizes every
+        // box to the text width it measures at render time; if the font is still
+        // swapping it measures the narrower fallback metrics and the final glyphs
+        // overflow the box by a few pixels.
+        try {
+          await document.fonts?.ready;
+        } catch {
+          // document.fonts may be unavailable; rendering still works, just less exact
+        }
 
         // Render the diagram using render method (returns SVG string, no DOM manipulation)
         let svgContent: string | null = null;
@@ -189,18 +201,99 @@ const MermaidRenderer = ({ code, title }: { code: string; title?: string }) => {
                 }
               });
 
-              // Get viewBox
+              // Resize the label boxes Mermaid draws (notes get class "note", sequence
+              // participants get class "actor") to fit their text with a consistent
+              // margin. Mermaid sizes these from its own text measurement, which can run
+              // short (text spills out) or leave uneven gaps. We re-measure each label
+              // with a canvas using the same font, then set the box width to the text
+              // plus a fixed margin on each side and re-center it (the text is centered,
+              // so it stays put). Fonts are already awaited above, so canvas metrics
+              // match what the SVG renders. Baked into the string before serialization,
+              // which is the path that actually sticks.
+              const MARGIN = 26;
+              const measureCtx = document.createElement('canvas').getContext('2d');
+              if (measureCtx) {
+                const fontFamily = '"JetBrains Mono", monospace';
+                const readPx = (el: Element) => {
+                  const attr = el.getAttribute('font-size');
+                  if (attr) return parseFloat(attr) || 14;
+                  const m = (el.getAttribute('style') || '').match(/font-size:\s*([\d.]+)px/);
+                  return m ? parseFloat(m[1]) : 14;
+                };
+
+                let boxes = Array.from(svgElement.querySelectorAll('rect.note, rect.actor'));
+                if (boxes.length === 0) {
+                  // Fall back to any rect that backs a text label, in case the class
+                  // names differ for some diagram type.
+                  boxes = Array.from(svgElement.querySelectorAll('rect')).filter((rect) =>
+                    rect.parentElement?.querySelector(':scope > text'),
+                  );
+                }
+
+                boxes.forEach((rect) => {
+                  const texts = rect.parentElement?.querySelectorAll(':scope > text');
+                  if (!texts || texts.length === 0) return;
+                  const x = parseFloat(rect.getAttribute('x') || '0');
+                  const width = parseFloat(rect.getAttribute('width') || '0');
+                  if (!width) return;
+
+                  // A wrapped note renders each line as its own <text> (and a line may
+                  // also be split into <tspan>s). Measure every line and keep the widest.
+                  let textWidth = 0;
+                  texts.forEach((textEl) => {
+                    const spans = textEl.querySelectorAll('tspan');
+                    const lines = spans.length ? Array.from(spans) : [textEl];
+                    lines.forEach((line) => {
+                      const content = line.textContent || '';
+                      if (!content) return;
+                      measureCtx.font = `${readPx(line)}px ${fontFamily}`;
+                      textWidth = Math.max(textWidth, measureCtx.measureText(content).width);
+                    });
+                  });
+                  if (!textWidth) return;
+
+                  const desired = Math.ceil(textWidth + 2 * MARGIN);
+                  // Leave notes that intentionally span multiple participants (much
+                  // wider than their text) alone; otherwise normalize to a uniform margin.
+                  const newWidth = width > desired + 40 ? width : desired;
+
+                  const center = x + width / 2;
+                  rect.setAttribute('x', String(center - newWidth / 2));
+                  rect.setAttribute('width', String(newWidth));
+                });
+              }
+
+              // Parse the viewBox for the diagram's natural dimensions.
               const viewBox = svgElement.getAttribute('viewBox');
+              let naturalW = 0;
+              let naturalH = 0;
               if (viewBox) {
                 const [, , w, h] = viewBox.split(/\s+|,\s*/).map(Number);
                 if (!isNaN(w) && !isNaN(h)) {
-                  // Set explicit width and height based on viewBox
-                  svgElement.setAttribute('width', w.toString());
-                  svgElement.setAttribute('height', h.toString());
-                  // Ensure style doesn't constrain it
-                  svgElement.style.maxWidth = 'none';
+                  naturalW = w;
+                  naturalH = h;
                 }
               }
+
+              // Inline (display) version: rendered directly in the page so its text is
+              // measured against the same fonts/CSS Mermaid used when sizing the boxes.
+              // Embedding the SVG in an <img> instead would isolate it from the page
+              // fonts, so labels would render in a wider fallback font and overflow
+              // their rectangles. Render it at its natural size and only cap it with
+              // max-width so it shrinks on narrow viewports without ever upscaling.
+              if (naturalW && naturalH) {
+                svgElement.setAttribute('width', naturalW.toString());
+                svgElement.setAttribute('height', naturalH.toString());
+              }
+              svgElement.style.maxWidth = '100%';
+              svgElement.style.height = 'auto';
+              setInlineSvg(new XMLSerializer().serializeToString(doc));
+              setIsLoading(false);
+
+              // Export version: same fixed pixel dimensions, but unconstrained, so the
+              // "Copy as image" PNG has a real intrinsic size in an Image()/canvas.
+              svgElement.style.maxWidth = 'none';
+              svgElement.style.removeProperty('height');
 
               svgContent = new XMLSerializer().serializeToString(doc);
             }
@@ -375,15 +468,11 @@ const MermaidRenderer = ({ code, title }: { code: string; title?: string }) => {
             )
           }
         />
-        <div className="p-6 overflow-x-auto bg-[#0a0f14] text-center">
-          {isLoading && !imageData && (
-            <div className="text-gray-500 text-xs font-mono">Rendering diagram...</div>
-          )}
-          {imageData ? (
-            <img
-              src={imageData}
-              alt="Mermaid diagram"
-              className="max-w-none inline-block print:invert print:hue-rotate-180"
+        <div className="p-6 overflow-x-auto bg-[#0a0f14] print:bg-transparent text-center">
+          {inlineSvg ? (
+            <div
+              className="inline-block max-w-full [&>svg]:inline-block print:invert print:hue-rotate-180"
+              dangerouslySetInnerHTML={{ __html: inlineSvg }}
             />
           ) : (
             <div className="text-gray-500 text-xs font-mono">
