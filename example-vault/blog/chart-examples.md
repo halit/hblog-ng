@@ -1,8 +1,7 @@
 ---
-id: chart-examples
 title: Chart Capabilities Demo
 description: Demonstrating the new charting capabilities using Recharts and D3 concepts.
-date: 2025-11-30
+created: 2025-11-30
 ---
 
 # Chart Capabilities
