@@ -17,18 +17,16 @@ export function processCoverImage(
   let imagePath: string;
   if (path.isAbsolute(coverImage)) {
     imagePath = coverImage;
-  } else if (coverImage.startsWith('assets/images/headers/')) {
+  } else if (coverImage.startsWith('assets/covers/')) {
     imagePath = path.join(vaultDir, coverImage);
-  } else if (coverImage.startsWith('assets/headers/')) {
-    imagePath = path.join(vaultDir, 'assets', 'images', 'headers', path.basename(coverImage));
   } else if (coverImage.startsWith('assets/images/')) {
     imagePath = path.join(vaultDir, coverImage);
   } else if (coverImage.startsWith('assets/')) {
     imagePath = path.join(vaultDir, coverImage);
   } else if (!coverImage.includes('/') && !coverImage.includes('\\')) {
-    const headerPath = path.join(vaultDir, 'assets', 'images', 'headers', coverImage);
-    if (fs.existsSync(headerPath)) {
-      imagePath = headerPath;
+    const coverPath = path.join(vaultDir, 'assets', 'covers', coverImage);
+    if (fs.existsSync(coverPath)) {
+      imagePath = coverPath;
     } else {
       imagePath = path.resolve(path.dirname(filePath), coverImage);
     }
@@ -39,13 +37,13 @@ export function processCoverImage(
   if (fs.existsSync(imagePath)) {
     const imageName = path.basename(imagePath);
     const fileExt = path.extname(imageName).toLowerCase();
-    const vaultHeadersDir = path.join(vaultDir, 'assets', 'images', 'headers');
+    const vaultCoversDir = path.join(vaultDir, 'assets', 'covers');
 
-    const isHeader = imagePath.startsWith(vaultHeadersDir) || coverImage.includes('headers/');
+    const isCover = imagePath.startsWith(vaultCoversDir) || coverImage.includes('covers/');
 
     // Directories setup
     const vaultImagesDir = path.join(vaultDir, 'assets', 'images');
-    const destDir = isHeader ? vaultHeadersDir : vaultImagesDir;
+    const destDir = isCover ? vaultCoversDir : vaultImagesDir;
 
     if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
 
@@ -55,7 +53,7 @@ export function processCoverImage(
     }
 
     // Public Copy
-    const publicDestDir = isHeader ? path.join(publicImagesDir, 'headers') : publicImagesDir;
+    const publicDestDir = isCover ? path.join(publicImagesDir, 'covers') : publicImagesDir;
     if (!fs.existsSync(publicDestDir)) fs.mkdirSync(publicDestDir, { recursive: true });
 
     const publicPath = path.join(publicDestDir, imageName);
@@ -70,7 +68,7 @@ export function processCoverImage(
       finalName = `${path.basename(imageName, fileExt)}.webp`;
     }
 
-    return isHeader ? `/images/headers/${finalName}` : `/images/${finalName}`;
+    return isCover ? `/images/covers/${finalName}` : `/images/${finalName}`;
   }
 
   return undefined;

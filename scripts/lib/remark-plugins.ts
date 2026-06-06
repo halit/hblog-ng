@@ -206,6 +206,14 @@ export function remarkAssets(options: RemarkPluginOptions) {
 
 function getRelativeAssetInfo(resolvedPath: string, vaultDir: string, fallbackSubdir: string) {
   const fileName = path.basename(resolvedPath);
+
+  // Cover images live in assets/covers but are still served under /images,
+  // so preserve the covers/ prefix when computing the public display path.
+  const coversBase = path.join(vaultDir, 'assets', 'covers');
+  if (resolvedPath.startsWith(coversBase + path.sep)) {
+    return { relativePath: path.join('covers', fileName), fileName };
+  }
+
   const assetsBase = path.join(vaultDir, 'assets', fallbackSubdir);
   let relativePath = path.relative(assetsBase, resolvedPath);
 
@@ -237,10 +245,10 @@ function resolveAssetPath(
   const directAssetsPath = path.join(vaultDir, 'assets', ref);
   if (fs.existsSync(directAssetsPath)) return directAssetsPath;
 
-  // Special case for images/headers
+  // Special case for cover images (assets/covers)
   if (fallbackSubdir === 'images') {
-    const headerPath = path.join(vaultDir, 'assets', 'images', 'headers', ref);
-    if (fs.existsSync(headerPath)) return headerPath;
+    const coverPath = path.join(vaultDir, 'assets', 'covers', ref);
+    if (fs.existsSync(coverPath)) return coverPath;
   }
 
   return null;

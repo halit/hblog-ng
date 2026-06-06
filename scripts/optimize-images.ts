@@ -83,8 +83,15 @@ async function processDirectory(
     const stat = statSync(filePath);
 
     if (stat.isDirectory()) {
+      // Cover images live at vault/assets/covers but are served under /images/covers,
+      // so mirror them into the images subtree rather than a top-level public/covers.
+      const subOutputDir =
+        file === 'covers' && basename(inputDir) === 'assets'
+          ? join(outputDir, 'images', 'covers')
+          : join(outputDir, file);
+
       // Recursively process subdirectories
-      const subResult = await processDirectory(filePath, join(outputDir, file), options);
+      const subResult = await processDirectory(filePath, subOutputDir, options);
       processed += subResult.processed;
       skipped += subResult.skipped;
       subResult.converted.forEach((webp, orig) => converted.set(orig, webp));

@@ -61,13 +61,13 @@ async function parseVault(vaultPath: string, assetsDir?: string): Promise<VaultN
   const publicImagesDir = assetsDir || path.join(vaultDir, '..', 'public', 'images');
   const publicFilesDir = path.join(vaultDir, '..', 'public', 'files');
   const publicVideosDir = path.join(vaultDir, '..', 'public', 'videos');
-  const publicHeadersDir = path.join(publicImagesDir, 'headers');
+  const publicCoversDir = path.join(publicImagesDir, 'covers');
   const publicChartsDir = path.join(vaultDir, '..', 'public', 'assets', 'charts');
 
   const vaultImagesDir = path.join(vaultDir, 'assets', 'images');
   const vaultFilesDir = path.join(vaultDir, 'assets', 'files');
   const vaultVideosDir = path.join(vaultDir, 'assets', 'videos');
-  const vaultHeadersDir = path.join(vaultDir, 'assets', 'images', 'headers');
+  const vaultCoversDir = path.join(vaultDir, 'assets', 'covers');
   const vaultChartsDir = path.join(vaultDir, 'assets', 'charts');
 
   const processor = new VaultProcessor({
@@ -81,19 +81,19 @@ async function parseVault(vaultPath: string, assetsDir?: string): Promise<VaultN
     publicImagesDir,
     publicFilesDir,
     publicVideosDir,
-    publicHeadersDir,
+    publicCoversDir,
     publicChartsDir,
     vaultImagesDir,
     vaultFilesDir,
     vaultVideosDir,
-    vaultHeadersDir,
+    vaultCoversDir,
     vaultChartsDir,
   ].forEach(ensureDir);
 
-  if (fs.existsSync(vaultHeadersDir)) {
-    fs.readdirSync(vaultHeadersDir).forEach((header) => {
-      if (header.startsWith('.')) return;
-      copyFileSafe(path.join(vaultHeadersDir, header), path.join(publicHeadersDir, header));
+  if (fs.existsSync(vaultCoversDir)) {
+    fs.readdirSync(vaultCoversDir).forEach((cover) => {
+      if (cover.startsWith('.')) return;
+      copyFileSafe(path.join(vaultCoversDir, cover), path.join(publicCoversDir, cover));
     });
   }
 
@@ -149,22 +149,22 @@ async function parseVault(vaultPath: string, assetsDir?: string): Promise<VaultN
           );
 
           if (!coverImage && type !== 'system' && type !== 'profile') {
-            const defaultHeaderSvgPath = path.join(
+            const defaultCoverPngPath = path.join(
               vaultDir,
               '..',
               'public',
               'images',
-              'headers',
+              'covers',
               `default-${type}.png`,
             );
-            if (fs.existsSync(defaultHeaderSvgPath)) {
-              coverImage = `/images/headers/default-${type}.png`;
+            if (fs.existsSync(defaultCoverPngPath)) {
+              coverImage = `/images/covers/default-${type}.png`;
             } else if (
               fs.existsSync(
-                path.join(vaultDir, '..', 'public', 'images', 'headers', `default-${type}.svg`),
+                path.join(vaultDir, '..', 'public', 'images', 'covers', `default-${type}.svg`),
               )
             ) {
-              coverImage = `/images/headers/default-${type}.svg`;
+              coverImage = `/images/covers/default-${type}.svg`;
             }
           }
 
