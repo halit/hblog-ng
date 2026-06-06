@@ -89,9 +89,9 @@ const TokenRenderer: React.FC<{
       const Tag = `h${heading.depth}` as ElementType;
       const classNames = {
         1: 'text-3xl font-bold text-white mt-12 mb-8 font-display group relative scroll-mt-20',
-        2: 'text-2xl font-bold text-white mt-10 mb-6 font-display relative pl-4 group scroll-mt-20',
-        3: 'text-xl font-bold text-white mt-8 mb-4 font-display relative pl-4 group scroll-mt-20',
-        4: 'text-lg font-bold text-white mt-6 mb-4 font-display relative pl-4 group scroll-mt-20',
+        2: 'text-2xl font-bold text-white mt-24 mb-6 font-display relative pl-4 group scroll-mt-20',
+        3: 'text-lg font-semibold text-white mt-16 mb-4 font-display relative pl-4 group scroll-mt-20',
+        4: 'text-base font-semibold text-gray-200 mt-12 mb-4 font-display relative pl-4 group scroll-mt-20',
         5: 'text-base font-bold text-white mt-4 mb-2 font-display relative pl-4 group scroll-mt-20',
         6: 'text-sm font-bold text-white mt-4 mb-2 font-display relative pl-4 group scroll-mt-20',
       }[token.depth as 1 | 2 | 3 | 4 | 5 | 6];
@@ -285,8 +285,8 @@ const TokenRenderer: React.FC<{
     case 'table': {
       const table = token as Tokens.Table;
       return (
-        <div className="overflow-x-auto my-6 w-full">
-          <table className="w-full border-collapse">
+        <div className="overflow-x-auto my-4 w-full">
+          <table className="w-full border-collapse !my-0">
             <thead>
               <tr className="bg-gray-900/30 border-y border-gray-800">
                 {table.header.map((cell, i) => (
