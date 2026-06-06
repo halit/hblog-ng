@@ -29,17 +29,32 @@ function generateSpectrumSVG(distribution: SpectrumDistribution): string {
   const height = 20;
   const radius = 2;
 
-  const total = distribution.offensive + distribution.defensive;
+  // Include misc so blocks reflect the full distribution (offense / defense / misc).
+  const total = distribution.offensive + distribution.defensive + distribution.misc;
   const safeTotal = total === 0 ? 1 : total;
   const offCount = Math.round((distribution.offensive / safeTotal) * totalBlocks);
+  let defCount = Math.round((distribution.defensive / safeTotal) * totalBlocks);
 
-  // Generate 12 blocks
+  // Clamp so offense + defense never exceed the available blocks; the remainder is misc.
+  if (offCount + defCount > totalBlocks) {
+    defCount = totalBlocks - offCount;
+  }
+
+  // Generate 12 blocks. Colors mirror components/SpectrumMeter.tsx.
   for (let i = 0; i < totalBlocks; i++) {
     const x = i * (blockWidth + gap);
-    const isOffense = i < offCount;
-    const color = isOffense ? '#ff0055' : '#00e5ff';
-    // Use drop-shadow filter for glow
-    const filter = isOffense ? 'url(#offense-glow)' : 'url(#defense-glow)'; // Defined in og-template.svg defs
+
+    // misc fallback (gray-500), matching the gray used in SpectrumMeter
+    let color = '#6b7280';
+    let filter = 'url(#misc-glow)';
+
+    if (i < offCount) {
+      color = '#ff0055';
+      filter = 'url(#offense-glow)'; // Defined in og-template.svg defs
+    } else if (i < offCount + defCount) {
+      color = '#00e5ff';
+      filter = 'url(#defense-glow)';
+    }
 
     svg += `<rect x="${x}" y="0" width="${blockWidth}" height="${height}" rx="${radius}" fill="${color}" filter="${filter}" opacity="0.9" />\n`;
   }
