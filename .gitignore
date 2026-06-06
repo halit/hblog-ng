@@ -66,3 +66,6 @@ public/signatures/
 public/videos/
 public/search-index.json
 public/vault.json
+
+# Vault
+vault/
