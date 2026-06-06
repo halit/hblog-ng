@@ -161,7 +161,10 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
                       setTimeout(() => {
                         if (mark.parentNode) {
                           const parent = mark.parentNode;
-                          parent.replaceChild(document.createTextNode(mark.textContent || ''), mark);
+                          parent.replaceChild(
+                            document.createTextNode(mark.textContent || ''),
+                            mark,
+                          );
                           parent.normalize();
                         }
                       }, 3000);
@@ -213,9 +216,9 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   return (
     <>
       <div className="space-y-4">
-        <MarkdownContent 
-          tokens={tokens} 
-          vaultData={vaultData} 
+        <MarkdownContent
+          tokens={tokens}
+          vaultData={vaultData}
           referenceMap={referenceMap}
           onReferenceClick={onReferenceClick}
         />

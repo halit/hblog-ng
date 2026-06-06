@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { Filter, X, Minus, Plus, Cpu, FlaskConical, FileText, Hash, Zap, Shield, Box } from 'lucide-react';
+import {
+  Filter,
+  X,
+  Minus,
+  Plus,
+  Cpu,
+  FlaskConical,
+  FileText,
+  Hash,
+  Zap,
+  Shield,
+  Box,
+} from 'lucide-react';
 
 interface GraphControlsProps {
   zoom: number;

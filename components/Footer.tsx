@@ -40,7 +40,7 @@ const Footer: React.FC<FooterProps> = ({ rx, tx }) => {
         (n.type === 'project' &&
           (n.title?.toLowerCase().includes('blog') || n.title?.toLowerCase().includes('hblog'))),
     );
-    
+
     if (fallbackMatch) {
       setBlogProject(fallbackMatch);
     }

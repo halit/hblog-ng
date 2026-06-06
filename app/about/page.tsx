@@ -25,10 +25,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: schemaMarkup }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaMarkup }} />
       <About activeNode={aboutNode} />
     </>
   );

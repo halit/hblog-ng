@@ -32,7 +32,11 @@ export const GraphContextMenu: React.FC<GraphContextMenuProps> = ({
   const [copyFeedback, setCopyFeedback] = useState(false);
 
   const getPagePath = () => {
-    const cleanId = node.id.replace(/^keyword-/, '').split(':').pop() || node.id;
+    const cleanId =
+      node.id
+        .replace(/^keyword-/, '')
+        .split(':')
+        .pop() || node.id;
     switch (node.group) {
       case 'blog':
         return `/posts/${cleanId}`;

@@ -84,13 +84,13 @@ from [`public/_headers`](public/_headers).
 
 ## Commands
 
-| Command | Description |
-| --- | --- |
-| `npm run lint` | ESLint |
-| `npm run format` | Prettier |
-| `npm run test` | Vitest |
-| `npm run analyze` | Bundle-size visualization |
-| `npm run sign-posts` | PGP-sign vault posts |
+| Command              | Description               |
+| -------------------- | ------------------------- |
+| `npm run lint`       | ESLint                    |
+| `npm run format`     | Prettier                  |
+| `npm run test`       | Vitest                    |
+| `npm run analyze`    | Bundle-size visualization |
+| `npm run sign-posts` | PGP-sign vault posts      |
 
 ## Project layout
 

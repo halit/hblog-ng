@@ -22,7 +22,9 @@ const LatexInline = lazy(() => import('../LatexInline'));
 const QueryRenderer = lazy(() => import('../QueryRenderer'));
 const ChartRenderer = lazy(() => import('../ChartRenderer'));
 const ImageGallery = lazy(() => import('../ImageGallery'));
-const HighlightedCode = lazy(() => import('react-syntax-highlighter').then(m => ({ default: m.PrismAsyncLight })));
+const HighlightedCode = lazy(() =>
+  import('react-syntax-highlighter').then((m) => ({ default: m.PrismAsyncLight })),
+);
 
 // Syntax highlighting theme
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -50,20 +52,20 @@ interface MarkdownContentProps {
   compact?: boolean;
 }
 
-export const MarkdownContent: React.FC<MarkdownContentProps> = ({ 
-  tokens, 
-  vaultData, 
+export const MarkdownContent: React.FC<MarkdownContentProps> = ({
+  tokens,
+  vaultData,
   referenceMap,
   onReferenceClick,
-  compact = false
+  compact = false,
 }) => {
   return (
     <>
       {tokens.map((token, index) => (
-        <TokenRenderer 
-          key={index} 
-          token={token} 
-          vaultData={vaultData} 
+        <TokenRenderer
+          key={index}
+          token={token}
+          vaultData={vaultData}
           referenceMap={referenceMap}
           onReferenceClick={onReferenceClick}
           compact={compact}
@@ -400,9 +402,8 @@ const InlineRenderer: React.FC<{
           case 'text': {
             const text = token as Tokens.Text;
             const nextToken = tokens[i + 1];
-            const raw = nextToken?.type === 'codespan'
-              ? text.text.replace(/ $/, '\u00A0')
-              : text.text;
+            const raw =
+              nextToken?.type === 'codespan' ? text.text.replace(/ $/, '\u00A0') : text.text;
             return <span key={i}>{convertTextEmojis(raw)}</span>;
           }
           case 'strong': {
@@ -524,7 +525,7 @@ const InlineRenderer: React.FC<{
             const fileAttachment = token as Token & { name: string; path: string };
             const fileName = fileAttachment.name;
             const fileExt = fileName.split('.').pop()?.toLowerCase() || '';
-            
+
             // If the path is already resolved (starts with /files/ or /images/), use it directly
             // Otherwise, construct the default path
             let fileUrl = fileAttachment.path;
@@ -532,7 +533,7 @@ const InlineRenderer: React.FC<{
               const actualFileName = fileAttachment.path.split('/').pop() || fileAttachment.path;
               fileUrl = `/files/${encodeURIComponent(actualFileName)}`;
             }
-            
+
             return (
               <div key={i} className="my-4">
                 <FileAttachment fileName={fileName} fileUrl={fileUrl} fileExt={fileExt} />
@@ -593,7 +594,11 @@ const InlineRenderer: React.FC<{
                 </a>
               );
             }
-            return <span key={i} className="text-gray-500">[{referenceLink.refId}]</span>;
+            return (
+              <span key={i} className="text-gray-500">
+                [{referenceLink.refId}]
+              </span>
+            );
           }
 
           case 'wikilink': {
@@ -603,7 +608,8 @@ const InlineRenderer: React.FC<{
               (n) =>
                 n.title.toLowerCase() === wikilink.page.toLowerCase() ||
                 n.id === normalized ||
-                (n.aliases && n.aliases.some((a) => a.toLowerCase() === wikilink.page.toLowerCase())),
+                (n.aliases &&
+                  n.aliases.some((a) => a.toLowerCase() === wikilink.page.toLowerCase())),
             );
             if (target) {
               return (
@@ -619,7 +625,10 @@ const InlineRenderer: React.FC<{
               );
             }
             return (
-              <span key={i} className="text-gray-500 border-b border-dotted border-gray-700 cursor-not-allowed">
+              <span
+                key={i}
+                className="text-gray-500 border-b border-dotted border-gray-700 cursor-not-allowed"
+              >
                 {wikilink.label}
               </span>
             );
@@ -650,7 +659,11 @@ const InlineRenderer: React.FC<{
           }
 
           default:
-            return <span key={i} className="text-red-400">[{token.type}]</span>;
+            return (
+              <span key={i} className="text-red-400">
+                [{token.type}]
+              </span>
+            );
         }
       })}
     </>

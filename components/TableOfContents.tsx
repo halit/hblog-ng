@@ -34,17 +34,29 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => {
 
       // Match markdown headers: #, ##, ###
       if (trimmed.startsWith('### ')) {
-        const text = trimmed.slice(4).trim().replace(/^#+\s*/, '').trim();
+        const text = trimmed
+          .slice(4)
+          .trim()
+          .replace(/^#+\s*/, '')
+          .trim();
         const id = generateHeadingId(text, headingIndex);
         tocItems.push({ id, text, level: 3 });
         headingIndex++;
       } else if (trimmed.startsWith('## ')) {
-        const text = trimmed.slice(3).trim().replace(/^#+\s*/, '').trim();
+        const text = trimmed
+          .slice(3)
+          .trim()
+          .replace(/^#+\s*/, '')
+          .trim();
         const id = generateHeadingId(text, headingIndex);
         tocItems.push({ id, text, level: 2 });
         headingIndex++;
       } else if (trimmed.startsWith('# ') && !trimmed.startsWith('##')) {
-        const text = trimmed.slice(2).trim().replace(/^#+\s*/, '').trim();
+        const text = trimmed
+          .slice(2)
+          .trim()
+          .replace(/^#+\s*/, '')
+          .trim();
         const id = generateHeadingId(text, headingIndex);
         tocItems.push({ id, text, level: 1 });
         headingIndex++;

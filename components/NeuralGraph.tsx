@@ -6,12 +6,7 @@ import { VaultNode } from '@/types/vault';
 import { useGraphData } from '@/hooks/graph/useGraphData';
 import { useForceSimulation } from '@/hooks/graph/useForceSimulation';
 import { useGraphInteraction } from '@/hooks/graph/useGraphInteraction';
-import {
-  GraphCanvas,
-  GraphControls,
-  GraphSearch,
-  GraphContextMenu,
-} from '@/components/graph';
+import { GraphCanvas, GraphControls, GraphSearch, GraphContextMenu } from '@/components/graph';
 
 interface NeuralGraphProps {
   data: VaultNode[];

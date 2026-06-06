@@ -54,7 +54,9 @@ export const CalloutBlock: React.FC<CalloutBlockProps> = ({ type, title, childre
   }
 
   return (
-    <div className={`${bgColor} ${borderColor} border-l-4 p-4 my-6 flex gap-3 items-center rounded-r shadow-lg print:shadow-none animate-in fade-in slide-in-from-left-2`}>
+    <div
+      className={`${bgColor} ${borderColor} border-l-4 p-4 my-6 flex gap-3 items-center rounded-r shadow-lg print:shadow-none animate-in fade-in slide-in-from-left-2`}
+    >
       <Icon className={`${textColor} flex-shrink-0`} size={20} />
       <div className="flex-1">
         {title && (

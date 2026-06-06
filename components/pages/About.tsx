@@ -10,7 +10,7 @@ interface AboutProps {
 
 const About: React.FC<AboutProps> = ({ activeNode }) => {
   const rawContent = activeNode?.content || '';
-  
+
   return (
     <div className="container mx-auto px-6 py-12 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl">
       {/* Page Header - Matches Research/Project pages */}

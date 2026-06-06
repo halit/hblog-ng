@@ -21,9 +21,10 @@ export default function HomePage() {
     );
   }
 
-  const latestPost = [...vaultData]
-    .filter((n) => n.type === 'blog')
-    .sort((a, b) => getNodeSortDate(b) - getNodeSortDate(a))[0] || vaultData[0];
+  const latestPost =
+    [...vaultData]
+      .filter((n) => n.type === 'blog')
+      .sort((a, b) => getNodeSortDate(b) - getNodeSortDate(a))[0] || vaultData[0];
 
   if (!latestPost || !latestPost.id) {
     return (
@@ -35,10 +36,7 @@ export default function HomePage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: schemaMarkup }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaMarkup }} />
       <Home latestPost={latestPost} />
     </>
   );

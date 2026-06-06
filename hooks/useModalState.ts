@@ -33,10 +33,22 @@ export function useModalState(): ModalState {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
-      if (commandPaletteOpen) { setCommandPaletteOpen(false); return; }
-      if (searchOpen)         { setSearchOpen(false);         return; }
-      if (contactOpen)        { setContactOpen(false);        return; }
-      if (neuralLinkOpen)     { setNeuralLinkOpen(false);     return; }
+      if (commandPaletteOpen) {
+        setCommandPaletteOpen(false);
+        return;
+      }
+      if (searchOpen) {
+        setSearchOpen(false);
+        return;
+      }
+      if (contactOpen) {
+        setContactOpen(false);
+        return;
+      }
+      if (neuralLinkOpen) {
+        setNeuralLinkOpen(false);
+        return;
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -60,10 +72,15 @@ export function useModalState(): ModalState {
   }, []);
 
   return {
-    contactOpen, setContactOpen,
-    searchOpen, setSearchOpen,
-    neuralLinkOpen, setNeuralLinkOpen, closeNeuralLink,
-    commandPaletteOpen, setCommandPaletteOpen,
+    contactOpen,
+    setContactOpen,
+    searchOpen,
+    setSearchOpen,
+    neuralLinkOpen,
+    setNeuralLinkOpen,
+    closeNeuralLink,
+    commandPaletteOpen,
+    setCommandPaletteOpen,
     neuralGraphSearchTerm,
   };
 }

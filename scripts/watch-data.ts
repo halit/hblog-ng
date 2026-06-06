@@ -24,7 +24,7 @@ function runParser() {
   // Run both parse-vault and parse-bibtex
   exec('npm run parse-vault && npm run parse-bibtex', { cwd: rootDir }, (error) => {
     isRunning = false;
-    
+
     if (error) {
       console.error(`❌ Error during re-parsing: ${error.message}`);
     } else {

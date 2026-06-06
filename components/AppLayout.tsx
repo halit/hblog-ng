@@ -21,7 +21,9 @@ interface LayoutProps {
 function NavigationEvents({ setIsPageLoading }: { setIsPageLoading: (v: boolean) => void }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  useEffect(() => { setIsPageLoading(false); }, [pathname, searchParams, setIsPageLoading]);
+  useEffect(() => {
+    setIsPageLoading(false);
+  }, [pathname, searchParams, setIsPageLoading]);
   return null;
 }
 
@@ -30,20 +32,25 @@ export default function AppLayout({ children }: LayoutProps) {
   const [isPageLoading, setIsPageLoading] = useState(false);
 
   const {
-    contactOpen, setContactOpen,
-    searchOpen, setSearchOpen,
-    neuralLinkOpen, setNeuralLinkOpen, closeNeuralLink,
-    commandPaletteOpen, setCommandPaletteOpen,
+    contactOpen,
+    setContactOpen,
+    searchOpen,
+    setSearchOpen,
+    neuralLinkOpen,
+    setNeuralLinkOpen,
+    closeNeuralLink,
+    commandPaletteOpen,
+    setCommandPaletteOpen,
     neuralGraphSearchTerm,
   } = useModalState();
 
   const commands = buildCommands({
-    openSearch:         () => setSearchOpen(true),
-    openNeuralLink:     () => setNeuralLinkOpen(true),
-    openContact:        () => setContactOpen(true),
+    openSearch: () => setSearchOpen(true),
+    openNeuralLink: () => setNeuralLinkOpen(true),
+    openContact: () => setContactOpen(true),
     openCommandPalette: () => setCommandPaletteOpen(true),
-    goBack:             () => window.history.back(),
-    goForward:          () => window.history.forward(),
+    goBack: () => window.history.back(),
+    goForward: () => window.history.forward(),
   });
 
   useCommandHandler({ commands, enabled: !commandPaletteOpen });
@@ -55,12 +62,12 @@ export default function AppLayout({ children }: LayoutProps) {
       if (!anchor?.href) return;
 
       const isExternal = !anchor.href.startsWith(window.location.origin);
-      const isNewTab   = anchor.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey;
+      const isNewTab = anchor.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey;
       const isHashLink = anchor.href.includes('#') && anchor.pathname === window.location.pathname;
       if (isExternal || isNewTab || isHashLink) return;
 
       const current = new URL(window.location.href);
-      const target  = new URL(anchor.href);
+      const target = new URL(anchor.href);
       if (target.pathname !== current.pathname || target.search !== current.search) {
         setIsPageLoading(true);
       }

@@ -637,11 +637,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({
             </div>
           }
         />
-        <div
-          ref={chartContainerRef}
-          className="p-2 sm:p-4 bg-[#0a0f14]"
-          style={{ width: '100%' }}
-        >
+        <div ref={chartContainerRef} className="p-2 sm:p-4 bg-[#0a0f14]" style={{ width: '100%' }}>
           {mounted ? (
             <ResponsiveContainer width="100%" height={height} minWidth={0}>
               {renderChart()}

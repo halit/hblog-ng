@@ -3,12 +3,12 @@ import remarkParse from 'remark-parse';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
-import { 
-  remarkFrontmatterExtractor, 
-  remarkWikiLinks, 
-  remarkHashtags, 
+import {
+  remarkFrontmatterExtractor,
+  remarkWikiLinks,
+  remarkHashtags,
   remarkAssets,
-  remarkPreserveSyntax
+  remarkPreserveSyntax,
 } from './remark-plugins';
 import fs from 'fs';
 
@@ -67,7 +67,7 @@ export class VaultProcessor {
       .use(remarkStringify);
 
     const result = await processor.process(rawContent);
-    
+
     return {
       frontmatter,
       content: result.toString(),

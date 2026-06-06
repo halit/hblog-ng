@@ -3,13 +3,13 @@
  * Used by: tailwind.config.ts, config/graph.ts, components/ChartRenderer.tsx
  */
 export const BRAND_COLORS = {
-  offense:    '#ff0055',
-  defense:    '#00e5ff',
+  offense: '#ff0055',
+  defense: '#00e5ff',
   background: '#0a0f14',
-  neutral:    '#94a3b8',
-  text:       '#e5e5e5',
-  grid:       '#333333',
-  gray:       '#1a1a1a',
+  neutral: '#94a3b8',
+  text: '#e5e5e5',
+  grid: '#333333',
+  gray: '#1a1a1a',
 } as const;
 
 /** Extended chart palette (offense / defense first, then accent colours) */

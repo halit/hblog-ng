@@ -15,11 +15,11 @@ const redItems = [
 ];
 
 const blueItems = [
-  'Threat Intelligence', 
-  'Malware Analysis', 
-  'Computer Forensics', 
-  'Cryptography', 
-  'Incident Response'
+  'Threat Intelligence',
+  'Malware Analysis',
+  'Computer Forensics',
+  'Cryptography',
+  'Incident Response',
 ];
 
 const GlitchText: React.FC<GlitchTextProps> = ({ text, mode }) => {

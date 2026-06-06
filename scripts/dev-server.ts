@@ -8,16 +8,16 @@ const rootDir = path.resolve(__dirname, '..');
 
 console.log('🚀 Starting development server with data watcher...');
 
-const watchProcess = spawn('npm', ['run', 'watch-data'], { 
+const watchProcess = spawn('npm', ['run', 'watch-data'], {
   cwd: rootDir,
   stdio: 'inherit',
-  shell: true
+  shell: true,
 });
 
-const nextProcess = spawn('npx', ['next', 'dev'], { 
+const nextProcess = spawn('npx', ['next', 'dev'], {
   cwd: rootDir,
   stdio: 'inherit',
-  shell: true
+  shell: true,
 });
 
 const cleanup = () => {

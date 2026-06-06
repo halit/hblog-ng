@@ -50,7 +50,9 @@ export function useGraphInteraction({
         .reverse()
         .find((node) => {
           if (node.width && node.height) {
-            return Math.abs(node.x - x) <= node.width / 2 && Math.abs(node.y - y) <= node.height / 2;
+            return (
+              Math.abs(node.x - x) <= node.width / 2 && Math.abs(node.y - y) <= node.height / 2
+            );
           }
           const hoverRadius = 30;
           const dx = node.x - x;

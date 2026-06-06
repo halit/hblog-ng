@@ -89,7 +89,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, url, de
               onClick={() => handleShare('native')}
               className="w-full flex items-center justify-center gap-3 p-4 bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded transition-colors group"
             >
-              <Share2 size={20} className="text-gray-400 group-hover:scale-110 transition-transform" />
+              <Share2
+                size={20}
+                className="text-gray-400 group-hover:scale-110 transition-transform"
+              />
               <span className="text-sm font-mono text-gray-300">Native Share</span>
             </button>
           )}

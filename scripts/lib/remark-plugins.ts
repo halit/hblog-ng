@@ -208,23 +208,23 @@ function getRelativeAssetInfo(resolvedPath: string, vaultDir: string, fallbackSu
   const fileName = path.basename(resolvedPath);
   const assetsBase = path.join(vaultDir, 'assets', fallbackSubdir);
   let relativePath = path.relative(assetsBase, resolvedPath);
-  
+
   // If it's outside our expected assets subdir, just use the filename to avoid traversal issues
   if (relativePath.startsWith('..')) {
     relativePath = fileName;
   }
-  
+
   return { relativePath, fileName };
 }
 
 function resolveAssetPath(
-  ref: string, 
-  currentFilePath: string, 
-  vaultDir: string, 
-  fallbackSubdir: 'images' | 'files' | 'videos'
+  ref: string,
+  currentFilePath: string,
+  vaultDir: string,
+  fallbackSubdir: 'images' | 'files' | 'videos',
 ): string | null {
   if (path.isAbsolute(ref)) return ref;
-  
+
   // Try relative to current file
   const relativePath = path.resolve(path.dirname(currentFilePath), ref);
   if (fs.existsSync(relativePath)) return relativePath;

@@ -59,7 +59,7 @@ powering the client-side graph and search.
 
 - **`types/vault.ts`** — `VaultNode`, the central data structure. Notable fields:
   `id` (`blog:hello-world`), `type` (`system | blog | profile | project | intel |
-  research`), `spectrum` (`offensive | defensive | misc`, drives graph color),
+research`), `spectrum` (`offensive | defensive | misc`, drives graph color),
   `links[]` (resolved wikilink edges).
 - **`lib/routing.ts`** — `getPathFromId()` / `extractSlugFromId()` /
   `findNodeBySlugOrId()` map node IDs/types to URLs (`blog → /posts/[id]`,
