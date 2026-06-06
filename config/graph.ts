@@ -1,0 +1,30 @@
+import { BRAND_COLORS } from './theme';
+
+export const GRAPH_CONFIG = {
+  REPULSION: 2000,
+  FRICTION: 0.85,
+  CENTER_PULL: 0.002,
+  VELOCITY_THRESHOLD: 0.01,
+  MAX_DEPTH: 5,
+  MAX_PATHS: 20,
+  COLORS: {
+    BACKGROUND: BRAND_COLORS.background,
+    NEUTRAL:    BRAND_COLORS.neutral,
+    OFFENSE:    BRAND_COLORS.offense,
+    DEFENSE:    BRAND_COLORS.defense,
+    HOVER:      'rgba(239, 68, 68, 0.5)',
+    ACTIVE:     BRAND_COLORS.defense,
+    KEYWORD_DEFAULT: '#4b5563',
+    KEYWORD_ACTIVE:  BRAND_COLORS.defense,
+    LINK_BASE:  'rgba(200, 200, 200, 0.3)',
+    LINK_PATH:  BRAND_COLORS.defense,
+  },
+  DIMENSIONS: {
+    NODE_WIDTH: 160,
+    NODE_HEIGHT: 70,
+    KEYWORD_HEIGHT: 24,
+    ICON_SIZE: 12,
+    METER_HEIGHT: 6,
+    TOTAL_METER_BLOCKS: 12,
+  },
+};

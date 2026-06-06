@@ -1,0 +1,68 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js
+.next/
+out/
+.open-next/
+.wrangler/
+
+# Production
+/build
+dist/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Local env files (.env is committed with public defaults; *.local stays private)
+.env*.local
+.env.prod
+.env.production
+.env.development
+
+# Vercel
+.vercel
+
+# TypeScript build artifacts
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code local (personal) settings
+.claude/settings.local.json
+
+# Build artifacts
+temp-constants.mjs
+*.cache
+
+# ── Generated data files (rebuilt by `npm run prepare-data`) ─────────────────
+data/
+
+# ── Generated public files (rebuilt by `npm run prepare-data`) ───────────────
+public/assets/
+public/charts/
+public/files/
+public/images/
+public/mermaid/
+public/signatures/
+public/videos/
+public/search-index.json
+public/vault.json

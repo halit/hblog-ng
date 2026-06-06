@@ -1,0 +1,15 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
+  "remoteUser": "node",
+  "updateContentCommand": "sudo chown -R node .",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "saoudrizwan.claude-dev",
+        "davidanson.vscode-markdownlint",
+        "christian-kohler.npm-intellisense"
+      ]
+    }
+  },
+  "forwardPorts": [3000]
+}
