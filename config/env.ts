@@ -31,9 +31,6 @@ export interface AppConfig {
   pgpPrivateKeyPath?: string;
   pgpPublicKeyPath?: string;
 
-  // API keys
-  geminiApiKey?: string;
-
   // App version
   appVersion: string;
 
@@ -79,8 +76,6 @@ export const config: AppConfig = {
   pgpPassphrase: getEnv('NEXT_PUBLIC_PGP_PASSPHRASE') || undefined,
   pgpPrivateKeyPath: getEnv('NEXT_PUBLIC_PGP_PRIVATE_KEY_PATH') || undefined,
   pgpPublicKeyPath: getEnv('NEXT_PUBLIC_PGP_PUBLIC_KEY_PATH') || undefined,
-
-  geminiApiKey: getEnv('NEXT_PUBLIC_GEMINI_API_KEY') || undefined,
 
   appVersion: getEnv('NEXT_PUBLIC_APP_VERSION', '0.1.0'),
   baseUrl: getEnv('NEXT_PUBLIC_BASE_URL', ''),

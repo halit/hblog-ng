@@ -6,18 +6,28 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
+// On Windows the npm/npx executables are `.cmd` scripts. Resolving the correct
+// binary name lets us spawn without `shell: true`, which avoids the DEP0190
+// deprecation warning emitted when passing an args array to a shell.
+const isWindows = process.platform === 'win32';
+const npm = isWindows ? 'npm.cmd' : 'npm';
+const npx = isWindows ? 'npx.cmd' : 'npx';
+
+// Opt out of Next.js' anonymous telemetry for the dev server.
+const env = { ...process.env, NEXT_TELEMETRY_DISABLED: '1' };
+
 console.log('🚀 Starting development server with data watcher...');
 
-const watchProcess = spawn('npm', ['run', 'watch-data'], {
+const watchProcess = spawn(npm, ['run', 'watch-data'], {
   cwd: rootDir,
   stdio: 'inherit',
-  shell: true,
+  env,
 });
 
-const nextProcess = spawn('npx', ['next', 'dev'], {
+const nextProcess = spawn(npx, ['next', 'dev'], {
   cwd: rootDir,
   stdio: 'inherit',
-  shell: true,
+  env,
 });
 
 const cleanup = () => {
