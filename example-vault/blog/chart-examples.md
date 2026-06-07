@@ -1,12 +1,15 @@
 ---
-title: Chart Capabilities Demo
-description: Demonstrating the new charting capabilities using Recharts and D3 concepts.
+title: Chart Capabilities
+type: blog
+description: Rendering interactive, responsive charts directly from Markdown code blocks.
 created: 2025-11-30
+aliases:
+  - charts
 ---
 
 # Chart Capabilities
 
-This post demonstrates the new charting capabilities integrated into the blog engine. We use `recharts` under the hood to render interactive, responsive charts directly from Markdown code blocks.
+This post demonstrates the charting capabilities integrated into the blog engine. We use `recharts` under the hood to render interactive, responsive charts directly from Markdown code blocks.
 
 ## Cyber Threat Intelligence
 

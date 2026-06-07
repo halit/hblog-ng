@@ -26,29 +26,25 @@ timeline:
 
 This post demonstrates the rendering engine's ability to handle complex technical content including tables, callouts, and media. For more details on specific techniques, see [[Advanced Malware Techniques]] and related research on [[Behavioral Analysis of State-Sponsored Actors]]. The methodology follows established frameworks [ref:mitre-attack] and industry best practices [ref:nist-800-61].
 
-check [[Gurz]] its perfect.
+Wikilinks resolve to any node in the vault and become edges in the knowledge graph, for example [[NetWatch Intel Feed]].
 
-For detailed technical specifications, see the document below.
+## Embedded Files
+
+You can embed documents directly in a post. The renderer turns them into an inline viewer.
 
 [file:demo.pdf|Technical Specification Document]
 
-yeyy :) its cool :D fucking awesome.
-
 # Visual Reconnaissance
 
-Referencing visual data is critical for forensics. See **Figure 1** below for the memory map. This technique is commonly used in [[Advanced Malware Techniques]] for process analysis. The memory analysis approach is based on Volatility Framework [ref:volatility] and documented in academic research [ref:memory-forensics-survey].
+Referencing visual data is critical for forensics. See **Figure 1** below for the memory map. This technique is commonly used in [[Advanced Malware Techniques]] for process analysis. The memory analysis approach is based on the Volatility Framework [ref:volatility] and documented in academic research [ref:memory-forensics-survey].
 
-## test another section
+## Inline Tags
 
-I love #android and #ai both together.
+Tags such as #android and #ai are clickable and surface related content across the vault.
 
-## yes
+## Inline Images
 
 ![Memory Injection Flow](example1.jpeg)
-
-### another
-
-cool
 
 # Threat Intelligence Data
 
@@ -122,7 +118,7 @@ graph TD;
 We support inline video embedding for YouTube, Vimeo, and local MP4 files. This is useful for demonstrating proof-of-concepts or recording terminal sessions.
 
 **YouTube Example:**
-[video:https://www.youtube.com/watch?v=dQw4w9WgXcQ|Never Gonna Give You Up]
+[video:https://www.youtube.com/watch?v=aircAruvnKk|But what is a neural network?]
 
 **Vimeo Example:**
 [video:https://vimeo.com/148751763|Vimeo Staff Pick]
@@ -132,13 +128,6 @@ We support inline video embedding for YouTube, Vimeo, and local MP4 files. This 
 
 **Asciinema Example (Auto Width/Height):**
 [asciinema:11128|Terminal Session Demo]
-
-**Asciinema Example (Another):**
-[asciinema:690157|Small Terminal]
-[asciinema:659042|Small Terminal]
-
-**YouTube Example:**
-[video:https://www.youtube.com/watch?v=dQw4w9WgXcQ|Rick Roll]
 
 # Mathematical Notation (LaTeX)
 
