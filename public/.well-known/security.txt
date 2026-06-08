@@ -1,22 +1,10 @@
-Contact: mailto:security@halitalptekin.im
-Contact: https://halitalptekin.im/contact
-Expires: 2025-12-31T23:59:59.000Z
-Encryption: https://halitalptekin.im/.well-known/pgp-key.txt
-Acknowledgments: https://halitalptekin.im/acknowledgments
+Contact: mailto:halit@alptekin.im
+Policy: https://halit.alptekin.im/bug-bounty/
+Encryption: https://halit.alptekin.im/public-key.asc
 Preferred-Languages: en
-Canonical: https://halitalptekin.im/.well-known/security.txt
-Policy: https://halitalptekin.im/security-policy
-Hiring: https://halitalptekin.im/careers
+Canonical: https://halit.alptekin.im/.well-known/security.txt
+Expires: 2027-06-01T00:00:00.000Z
 
-# Security Policy
-# 
-# I take security seriously. If you discover a security vulnerability,
-# please follow responsible disclosure practices:
-#
-# 1. Do not publicly disclose the vulnerability
-# 2. Email security@halitalptekin.im with details
-# 3. Allow reasonable time for response and remediation
-# 4. Provide clear steps to reproduce the issue
-#
-# I appreciate your efforts to keep this site secure!
-
+# Found a vulnerability or exposed data? Please report it.
+# See the bug bounty page for what to report, rewards, and how:
+# https://halit.alptekin.im/bug-bounty/
