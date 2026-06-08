@@ -1,5 +1,4 @@
 ---
-title: Chart Capabilities
 type: blog
 description: Rendering interactive, responsive charts directly from Markdown code blocks.
 created: 2025-11-30

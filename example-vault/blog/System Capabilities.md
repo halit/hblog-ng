@@ -1,5 +1,4 @@
 ---
-title: 'System Capabilities'
 type: blog
 created: 2024-03-01
 aliases:

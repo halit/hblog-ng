@@ -16,7 +16,6 @@ const __dirname = path.dirname(__filename);
 
 // Interface for raw frontmatter from YAML
 interface RawFrontmatter {
-  title?: string;
   type?: string;
   cover_image?: string;
   image?: string;
@@ -124,14 +123,17 @@ async function parseVault(vaultPath: string, assetsDir?: string): Promise<VaultN
           } = await processor.processFile(filePath);
           const frontmatter = rawFrontmatter as RawFrontmatter;
 
+          // Obsidian uses the filename as the note's display name and as the
+          // target of [[wikilinks]]. We mirror that: the filename is the single
+          // source of truth for the title — there is no `title` frontmatter.
           const filename = path.basename(filePath, '.md');
-          const title = frontmatter.title || filename;
+          const title = filename;
           const type = frontmatter.type || 'blog';
 
           let id: string;
-          if (filename === 'root' && title === 'root.md' && type === 'system') {
+          if (filename === 'root' && type === 'system') {
             id = 'home';
-          } else if (filename === 'whoami' && title === 'whoami' && type === 'profile') {
+          } else if (filename === 'whoami' && type === 'profile') {
             id = 'about';
           } else {
             const normalizedTitle = title
