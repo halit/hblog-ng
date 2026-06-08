@@ -16,11 +16,11 @@ const BugBounty = () => {
             <div className="flex gap-4 items-start">
               <Terminal className="w-6 h-6 text-gray-400 mt-1 shrink-0" />
               <div>
-                <h2 className="text-xl font-bold text-white mb-2">System Directive</h2>
+                <h2 className="text-xl font-bold font-display text-white mb-2">What to report</h2>
                 <p>
-                  If you find any vulnerability, personal information, leaked credentials,
-                  documents, or any sensitive data concerning my digital footprint, I want to know.
-                  I am committed to securing my systems and value the research community's help.
+                  Found a vulnerability, leaked credentials, exposed documents, or other sensitive
+                  data tied to me? Let me know. I want to keep my systems secure and I appreciate
+                  the help.
                 </p>
               </div>
             </div>
@@ -28,10 +28,10 @@ const BugBounty = () => {
             <div className="flex gap-4 items-start">
               <Gift className="w-6 h-6 text-gray-400 mt-1 shrink-0" />
               <div>
-                <h2 className="text-xl font-bold text-white mb-2">Reward Protocol</h2>
+                <h2 className="text-xl font-bold font-display text-white mb-2">Rewards</h2>
                 <p>
-                  I am ready to provide <strong>gift cards</strong> for valid, verified, and timely
-                  reports. The reward amount depends on the severity and impact of the finding.
+                  Valid, verified reports earn <strong>gift cards</strong>. The amount depends on
+                  the severity and impact of what you find.
                 </p>
               </div>
             </div>
@@ -39,9 +39,9 @@ const BugBounty = () => {
             <div className="flex gap-4 items-start">
               <Mail className="w-6 h-6 text-gray-400 mt-1 shrink-0" />
               <div>
-                <h2 className="text-xl font-bold text-white mb-2">Reporting Channel</h2>
+                <h2 className="text-xl font-bold font-display text-white mb-2">How to report</h2>
                 <p>
-                  Submit your findings to{' '}
+                  Send your findings to{' '}
                   <a
                     href={`mailto:${config.authorEmail}?subject=[Bug Bounty]`}
                     className="text-white hover:text-gray-300 font-mono underline underline-offset-4 transition-colors"
