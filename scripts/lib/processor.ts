@@ -11,6 +11,7 @@ import {
   remarkPreserveSyntax,
 } from './remark-plugins';
 import fs from 'fs';
+import path from 'path';
 
 export interface ProcessorConfig {
   vaultDir: string;
@@ -24,6 +25,31 @@ export class VaultProcessor {
 
   constructor(config: ProcessorConfig) {
     this.config = config;
+  }
+
+  /**
+   * Build a processor with the same public-asset directory layout that
+   * `parse-vault.ts` uses. Keeping this in one place guarantees that the
+   * signer (`sign-posts.ts`) and the data pipeline produce byte-identical
+   * `content`, so PGP signatures verify against the published `node.content`.
+   */
+  static forVault(vaultDir: string, assetsDir?: string): VaultProcessor {
+    return new VaultProcessor({
+      vaultDir,
+      publicImagesDir: assetsDir || path.join(vaultDir, '..', 'public', 'images'),
+      publicFilesDir: path.join(vaultDir, '..', 'public', 'files'),
+      publicVideosDir: path.join(vaultDir, '..', 'public', 'videos'),
+    });
+  }
+
+  /**
+   * The exact text that gets PGP-signed and that the site stores as
+   * `node.content`: the processed body, trimmed. The signer and the verifier
+   * must both use this so signatures match.
+   */
+  async getSignableContent(filePath: string): Promise<string> {
+    const { content } = await this.processFile(filePath);
+    return content.trim();
   }
 
   async processFile(filePath: string): Promise<{

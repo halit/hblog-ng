@@ -69,12 +69,8 @@ async function parseVault(vaultPath: string, assetsDir?: string): Promise<VaultN
   const vaultCoversDir = path.join(vaultDir, 'assets', 'covers');
   const vaultChartsDir = path.join(vaultDir, 'assets', 'charts');
 
-  const processor = new VaultProcessor({
-    vaultDir,
-    publicImagesDir,
-    publicFilesDir,
-    publicVideosDir,
-  });
+  // Shared factory so the signer (sign-posts.ts) produces byte-identical content.
+  const processor = VaultProcessor.forVault(vaultDir, assetsDir);
 
   [
     publicImagesDir,

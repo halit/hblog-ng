@@ -83,8 +83,8 @@ export default function UnifiedDetailHeader({
             <Share2 size={12} /> SHARE
           </button>
 
-          {/* Blog Specific */}
-          {node.type === 'blog' && node.signature && setSignatureOpen && (
+          {/* Any signed post can be verified */}
+          {node.signature && setSignatureOpen && (
             <button
               onClick={() => setSignatureOpen(node.signature!)}
               className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-gray-300 px-3 py-1.5 text-xs font-bold border border-gray-800 transition-colors"

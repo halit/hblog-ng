@@ -2,34 +2,22 @@ import fs from 'fs';
 import path from 'path';
 import { promises as fsPromises } from 'fs';
 import { spawn } from 'child_process';
+import { fileURLToPath } from 'url';
 import * as openpgp from 'openpgp';
 import 'dotenv/config';
 
 import { getVaultPath } from './lib/vault-path';
+import { VaultProcessor } from './lib/processor';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Configuration
 const PASSPHRASE = process.env.NEXT_PUBLIC_PGP_PASSPHRASE;
 const KEY_ID = process.env.NEXT_PUBLIC_PGP_KEY_ID;
 const VAULT_DIR = getVaultPath();
-
-// Reuse frontmatter parsing from parse-vault.ts (simplified)
-function parseFrontmatter(content: string): {
-  frontmatter: Record<string, unknown>;
-  body: string;
-} {
-  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
-  const match = content.match(frontmatterRegex);
-
-  if (!match) {
-    return { frontmatter: {}, body: content };
-  }
-
-  // We only need the body for signing
-  return {
-    frontmatter: {}, // We don't parse frontmatter details here
-    body: match[2],
-  };
-}
+// Mirror parse-vault.ts so the signed bytes equal the published `node.content`.
+const ASSETS_DIR = path.resolve(__dirname, '../public/images');
 
 async function getPrivateKey(): Promise<string | null> {
   if (process.env.NEXT_PUBLIC_PGP_PRIVATE_KEY) {
@@ -123,14 +111,13 @@ async function signContent(
 async function processFile(
   filePath: string,
   vaultAssetsDir: string,
+  processor: VaultProcessor,
   privateKey: string | null,
   useSystemGpg: boolean,
 ) {
-  const content = await fsPromises.readFile(filePath, 'utf-8');
-  const { body } = parseFrontmatter(content);
-
-  // We sign the trimmed body to match standard behavior
-  const bodyToSign = body.trim();
+  // Sign exactly what the site publishes as `node.content` (processed body,
+  // trimmed) so the in-browser Verify button matches the served content.
+  const bodyToSign = await processor.getSignableContent(filePath);
 
   if (!bodyToSign) {
     console.log(`  ! Skipping empty body: ${path.basename(filePath)}`);
@@ -218,8 +205,10 @@ async function main() {
   await traverse(VAULT_DIR);
   console.log(`Found ${files.length} markdown files.`);
 
+  const processor = VaultProcessor.forVault(VAULT_DIR, ASSETS_DIR);
+
   for (const file of files) {
-    await processFile(file, vaultAssetsDir, privateKey, useSystemGpg);
+    await processFile(file, vaultAssetsDir, processor, privateKey, useSystemGpg);
   }
 
   console.log('\nSigning complete.');

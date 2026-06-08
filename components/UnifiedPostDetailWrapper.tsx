@@ -36,6 +36,7 @@ export default function UnifiedPostDetailWrapper({
         isOpen={!!signatureOpen}
         onClose={() => setSignatureOpen(null)}
         signature={signatureOpen}
+        content={activeNode.content}
       />
 
       <BibtexModal isOpen={!!bibtexOpen} onClose={() => setBibtexOpen(null)} bibtex={bibtexOpen} />

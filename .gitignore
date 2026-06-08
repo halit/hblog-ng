@@ -69,3 +69,5 @@ public/vault.json
 
 # Vault
 vault/
+# PGP signing private material (never commit)
+.secrets/

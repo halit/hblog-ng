@@ -1,19 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Twitter, Linkedin, Github, Copy, CheckCircle } from 'lucide-react';
+import { X, Twitter, Linkedin, Github, Copy, CheckCircle } from 'lucide-react';
 import { config } from '@/config/env';
+import { usePublicKey } from '@/hooks/usePublicKey';
 
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const PGP_PLACEHOLDER =
-  '-----BEGIN PGP PUBLIC KEY BLOCK-----\nmQINBF...[ACTUAL_KEY_WOULD_GO_HERE]...\n-----END PGP PUBLIC KEY BLOCK-----';
-
 export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
-  const pgpKey = config.pgpPublicKey || PGP_PLACEHOLDER;
+  const pgpKey = usePublicKey() ?? 'Loading public key…';
   const [emailCopied, setEmailCopied] = useState(false);
   const [keyCopied, setKeyCopied] = useState(false);
 
@@ -35,14 +33,28 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl bg-[#0a0f14] border border-gray-800 rounded-lg shadow-2xl overflow-hidden"
+        className="w-fit max-w-[95vw] bg-[#0a0f14] border border-gray-800 rounded-lg shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6 space-y-4">
+        {/* Header — unified with the other modals (mono label + close). */}
+        <div className="p-4 border-b border-gray-800 flex justify-between items-center gap-4">
+          <span className="font-mono text-xs text-gray-400">SECURE CONTACT</span>
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-gray-800 rounded text-gray-500 hover:text-white transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        {/* The PGP key block sets the width; other sections fill it via
+            `w-0 min-w-full` without forcing the modal wider, so the key fits
+            with no empty space on the right. */}
+        <div className="p-5 space-y-4">
           {/* Email */}
-          <div>
+          <div className="w-0 min-w-full">
             <label className="text-[10px] font-mono text-gray-500 uppercase block mb-2">
-              Target Email
+              Email Address
             </label>
             <div className="relative group">
               <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -71,7 +83,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
             <label className="text-[10px] font-mono text-gray-500 uppercase block mb-2">
               PGP Public Key
             </label>
-            <div className="relative group">
+            <div className="relative group w-fit max-w-full">
               <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => copyText(pgpKey, setKeyCopied)}
@@ -85,14 +97,14 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                   {keyCopied ? 'Copied' : 'Copy'}
                 </button>
               </div>
-              <pre className="bg-gray-900 border border-gray-800 p-3 rounded text-[10px] text-gray-400 font-mono h-32 overflow-y-auto">
+              <pre className="w-fit max-w-full bg-gray-900 border border-gray-800 p-4 rounded text-xs text-gray-300 font-mono max-h-[60vh] overflow-auto whitespace-pre">
                 {pgpKey}
               </pre>
             </div>
           </div>
 
           {/* Social */}
-          <div>
+          <div className="w-0 min-w-full">
             <label className="text-[10px] font-mono text-gray-500 uppercase block mb-2">
               Social Channels
             </label>
