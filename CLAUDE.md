@@ -85,6 +85,24 @@ research`), `spectrum` (`offensive | defensive | misc`, drives graph color),
 - **`components/NeuralGraph.tsx`** + **`components/graph/*`** + **`hooks/graph/*`**
   — canvas-based D3 force simulation (not SVG). Config in `config/graph.ts`;
   colors `offense: #ff0055`, `defense: #00e5ff`.
+- **`lib/metadata.ts`** — `generateMetadata` helpers: per-page Open Graph /
+  Twitter (`summary_large_image`) cards and JSON-LD structured data
+  (`TechArticle` / `ScholarlyArticle` / `SoftwareApplication`, breadcrumbs).
+  Used by the `app/**/page.tsx` routes; OG image URLs point at the PNGs below.
+- **`lib/feed.ts`** + **`app/feed.{xml,atom,json}/route.ts`** — RSS 2.0, Atom,
+  and JSON Feed. `lib/rss-markdown.ts` is the separate string renderer for feed
+  HTML (don't reuse the React `MarkdownRenderer` here). `app/{sitemap,robots,
+manifest}.ts` cover the rest of SEO/PWA.
+- **Search** — MiniSearch. The index is built in `parse-vault` and written to
+  `public/search-index.json`, lazy-loaded client-side via `lib/search-client.ts`
+  (`components/SearchModal.tsx`, command palette in `config/commands.ts`).
+- **PGP** — `scripts/sign-posts.ts` (`npm run sign-posts`) writes detached
+  signatures into note frontmatter; in-browser verification uses OpenPGP.js
+  (`components/modals/SignatureModal.tsx`, `hooks/usePublicKey.ts`). Private key
+  material lives in `.secrets/` and is never inlined into `NEXT_PUBLIC_*`.
+- **Asset pipeline** — `scripts/optimize-images.ts` converts raster images to
+  **WebP** (Sharp, fit 1920×1920) into `public/images/`;
+  `scripts/generate-og-images.ts` renders the 1200×630 OG PNG per note.
 - **`utils/index.ts`** — shared helpers incl. `byNewest` (sort comparator) and
   `stripMarkdownToText` (plain-text excerpts). Prefer these over re-implementing.
 
