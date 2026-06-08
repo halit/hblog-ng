@@ -57,18 +57,30 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ id, children, className }) =>
       timerRef.current = null;
     }
 
-    // Use currentTarget to get the bound element (trigger)
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    // Anchor to the mouse cursor rather than the element's bounding box.
+    // A wikilink that wraps across two lines has a box spanning the full
+    // content width, so its center lands mid-page — tracking the cursor
+    // keeps the preview next to the pointer instead.
+    updatePosition(e);
+
+    setIsOpen(true);
+  };
+
+  const updatePosition = (e: React.MouseEvent) => {
     const scrollY = window.pageYOffset || document.documentElement.scrollTop;
     const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
 
-    // Position above by default
+    // Position just above the cursor.
     setPosition({
-      top: rect.top + scrollY - 10,
-      left: rect.left + scrollX + rect.width / 2,
+      top: e.clientY + scrollY - 12,
+      left: e.clientX + scrollX,
     });
+  };
 
-    setIsOpen(true);
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isOpen) {
+      updatePosition(e);
+    }
   };
 
   const handleMouseLeave = () => {
@@ -95,6 +107,7 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ id, children, className }) =>
         ref={triggerRef}
         className={className}
         onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
         {children}
@@ -154,7 +167,10 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ id, children, className }) =>
                 {/* Footer: Stats/Spectrum */}
                 <div className="flex items-center justify-between pt-3 border-t border-gray-800/50">
                   <span className="text-[10px] text-gray-600 font-mono">
-                    {new Date(targetNode.updated).getFullYear()}
+                    {targetNode.year ||
+                      new Date(
+                        targetNode.created || targetNode.updated || Date.now(),
+                      ).getFullYear()}
                   </span>
                   <SpectrumMeter distribution={spectrum} className="w-24" />
                 </div>
