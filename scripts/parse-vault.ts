@@ -259,6 +259,12 @@ async function parseVault(vaultPath: string, assetsDir?: string): Promise<VaultN
             defensive: frontmatter.defensive,
             misc: frontmatter.misc,
           };
+          // Drafts are work-in-progress: drop them entirely so they appear
+          // nowhere — not in the graph, search index, or compiled content.
+          if (typeof node.status === 'string' && node.status.toLowerCase() === 'draft') {
+            return;
+          }
+
           nodes.push(node);
         } catch (error) {
           console.error(`Error parsing ${filePath}:`, error);
