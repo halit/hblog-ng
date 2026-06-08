@@ -198,7 +198,11 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   }, [content, pathname]); // Also trigger on pathname change for same-page navigation
 
   const tokens = React.useMemo(() => {
-    return getMarked().lexer(content);
+    // Editors auto-escape a line-leading `#` to `\#` so it isn't read as a
+    // heading. Undo that for `\#tag` (escape followed by a letter) so hashtags
+    // still resolve to keyword links; a real `\# Heading` stays escaped.
+    const normalized = content.replace(/\\#(?=[A-Za-z])/g, '#');
+    return getMarked().lexer(normalized);
   }, [content]);
 
   const onReferenceClick = React.useCallback((num: number) => {

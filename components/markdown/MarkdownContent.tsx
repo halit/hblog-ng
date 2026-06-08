@@ -406,6 +406,11 @@ const InlineRenderer: React.FC<{
               nextToken?.type === 'codespan' ? text.text.replace(/ $/, '\u00A0') : text.text;
             return <span key={i}>{convertTextEmojis(raw)}</span>;
           }
+          case 'escape': {
+            // Backslash-escaped character (e.g. `\#`, `\$`); render the literal char.
+            const escape = token as Tokens.Escape;
+            return <span key={i}>{escape.text}</span>;
+          }
           case 'strong': {
             const strong = token as Tokens.Strong;
             return (
