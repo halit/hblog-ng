@@ -110,10 +110,12 @@ data is loaded in Server Components via `lib/vault.ts`.
 
 ## Configuration
 
-All env vars are read through `config/env.ts`, which holds the site's real
-identity as defaults (title, author, social handles, PGP, etc.). Override any of
-them via `.env.local` with the matching `NEXT_PUBLIC_*` variable. Every
-`NEXT_PUBLIC_*` value is public (inlined into the build).
+All env vars are read through `config/env.ts`. The defaults live in the
+committed `.env` file (the site's identity: title, author, social handles), not
+inline in `env.ts`. Next.js loads `.env` automatically; override any value via a
+git-ignored `.env.local` with the matching `NEXT_PUBLIC_*` variable. Every
+`NEXT_PUBLIC_*` value is public (inlined into the build). Private material (PGP
+private key, passphrase) stays in `.env.local`, never `.env`.
 
 ## Adding a content type
 
