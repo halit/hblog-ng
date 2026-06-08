@@ -15,56 +15,6 @@ canvas-rendered graph of notes and their `[[wikilinks]]`.
 
 Built with Next.js (App Router, static export) and deployed to Cloudflare Pages.
 
-## Features
-
-### Writing in Obsidian Markdown
-
-- `[[wikilinks]]`, `[[Page#Section|Label]]`, and `![[embeds]]` resolved to real
-  links and edges, with a hover **link preview** card for each target note.
-- Obsidian **callouts** (`> [!WARNING]`, `> [!INFO]`, …) with themed icons.
-- **KaTeX** math (`$inline$` and `$$block$$`), **Mermaid** diagrams, and
-  **charts** (` ```chart ` blocks rendered with Recharts: bar / line / area / pie).
-- Syntax highlighting (Prism, One Dark), task lists, and footnotes.
-- **BibTeX citations**: drop a `references.bib` in the vault and cite with
-  `[ref:key]`; references render as numbered footnotes.
-- Embedded media: **asciinema** terminal casts (`[asciinema:id]`), YouTube /
-  Vimeo / direct video (`[video:url]`), downloadable file attachments
-  (`[file:path]`), image galleries, and click-to-zoom images.
-- `#hashtags` become clickable keyword pages, and dynamic ` ```query ` blocks
-  list notes filtered by type / status / keyword.
-
-### Knowledge graph & navigation
-
-- Interactive knowledge graph rendered on **canvas** with a D3 force simulation
-  (not SVG), colored by topic spectrum (offense `#ff0055` / defense `#00e5ff`).
-- Drag, zoom/pan, in-graph search, node filtering, and shortest-path finding.
-- Client-side fuzzy **search** (MiniSearch) and a **command palette** with
-  keyboard shortcuts (search `Ctrl+F`, graph `Ctrl+G`, palette `Ctrl+K`).
-- Per-note table of contents, backlinks / related notes, and smart suggestions.
-
-### Performance & assets
-
-- **Static export, no server runtime** — deploys as plain files.
-- All raster images converted to **WebP** (Sharp, resized to fit 1920×1920) for
-  fast loads; assets served with long-lived immutable cache headers.
-- Heavy libraries (graph, search, PGP, Mermaid) are lazy-loaded on demand.
-
-### Social, SEO & syndication
-
-- **Per-note Open Graph images** (1200×630 PNG) generated at build time, each
-  with a spectrum graphic, plus Twitter `summary_large_image` cards.
-- **RSS 2.0** (`/feed.xml`), **Atom** (`/feed.atom`), and **JSON Feed**
-  (`/feed.json`).
-- `sitemap.xml`, `robots.txt`, a PWA web manifest, and JSON-LD structured data
-  (Article / ScholarlyArticle / SoftwareApplication, breadcrumbs).
-- Security and caching headers shipped via [`public/_headers`](public/_headers).
-
-### Trust
-
-- **PGP-signed posts** with **in-browser signature verification** — readers can
-  verify a note against your public key without leaving the page
-  (`npm run sign-posts` to sign; OpenPGP.js to verify).
-
 ## Quick start
 
 Requires Node.js 20+ and npm.
@@ -85,18 +35,67 @@ The graph and search indexes are generated at build time from the vault. The dev
 server re-runs the data pipeline when vault content changes; if something looks
 stale, run `npm run prepare-data`.
 
+## Features
+
+### Writing in Obsidian Markdown
+
+- `[[wikilinks]]`, `[[Page#Section|Label]]`, and `![[embeds]]` resolve to real
+  links and graph edges, with a hover preview card for each target note.
+- Obsidian callouts (`> [!WARNING]`, `> [!INFO]`) with themed icons.
+- KaTeX math (`$inline$` and `$$block$$`), Mermaid diagrams, and charts
+  (` ```chart ` blocks rendered with Recharts: bar, line, area, pie).
+- Syntax highlighting (Prism, One Dark), task lists, and footnotes.
+- BibTeX citations: add a `references.bib` to the vault and cite with
+  `[ref:key]`. References render as numbered footnotes.
+- Embedded media: asciinema casts (`[asciinema:id]`), YouTube, Vimeo, or direct
+  video (`[video:url]`), file attachments (`[file:path]`), image galleries, and
+  click-to-zoom images.
+- `#hashtags` become keyword pages, and ` ```query ` blocks list notes filtered
+  by type, status, or keyword.
+
+### Knowledge graph and navigation
+
+- Knowledge graph rendered on canvas with a D3 force simulation (not SVG),
+  colored by topic spectrum (offense `#ff0055`, defense `#00e5ff`).
+- Drag, zoom and pan, in-graph search, node filtering, and shortest-path finding.
+- Client-side fuzzy search (MiniSearch) and a command palette with keyboard
+  shortcuts (search `Ctrl+F`, graph `Ctrl+G`, palette `Ctrl+K`).
+- Per-note table of contents, backlinks, related notes, and suggestions.
+
+### Performance and assets
+
+- Static export with no server runtime. The site deploys as plain files.
+- Raster images are converted to WebP (Sharp, resized to fit 1920×1920) and
+  served with long-lived cache headers.
+- Heavy libraries (graph, search, PGP, Mermaid) load on demand.
+
+### Social, SEO, and syndication
+
+- Per-note Open Graph images (1200×630 PNG) generated at build time, plus
+  Twitter `summary_large_image` cards.
+- RSS 2.0 (`/feed.xml`), Atom (`/feed.atom`), and JSON Feed (`/feed.json`).
+- `sitemap.xml`, `robots.txt`, a PWA web manifest, and JSON-LD structured data
+  (Article, ScholarlyArticle, SoftwareApplication, breadcrumbs).
+- Security and caching headers in [`public/_headers`](public/_headers).
+
+### Signed posts
+
+- Posts can be PGP-signed and verified in the browser, so readers can check a
+  note against your public key without leaving the page. Sign with
+  `npm run sign-posts`; verification uses OpenPGP.js.
+
 ## Configuration
 
-The committed [`.env`](.env) file holds the site's defaults — title,
-description, URL, author, and social handles. These `NEXT_PUBLIC_*` values are
-public by design; they're inlined into the static build.
+The committed [`.env`](.env) file holds the site's defaults: title, description,
+URL, author, and social handles. These `NEXT_PUBLIC_*` values are public by
+design and are inlined into the static build.
 
 To run your own instance, edit [`.env`](.env) directly, or override individual
-values with a git-ignored `.env.local` (which takes precedence and is never
-committed). Next.js loads both automatically for `dev` and `build`.
+values with a git-ignored `.env.local`, which takes precedence and is never
+committed. Next.js loads both automatically for `dev` and `build`.
 
-Keep private material — PGP private keys, passphrases — out of `.env`. Put it in
-`.env.local` or pass it through the environment at build time.
+Keep private material such as PGP private keys and passphrases out of `.env`.
+Put it in `.env.local` or pass it through the environment at build time.
 
 ## Content
 
