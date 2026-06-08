@@ -1,6 +1,9 @@
 /**
- * Environment configuration
- * Loads environment variables with defaults.
+ * Environment configuration.
+ *
+ * Defaults live in the committed `.env` file (public `NEXT_PUBLIC_*` values),
+ * not here. Next.js loads `.env` automatically for dev and build; override any
+ * value with a git-ignored `.env.local`.
  *
  * `getEnv` reads from process.env (Node / Next.js build) first, then falls
  * back to window.__ENV__ (runtime injection), then to the supplied default.
@@ -56,17 +59,14 @@ function getEnv(key: string, defaultValue = ''): string {
 }
 
 export const config: AppConfig = {
-  siteTitle: getEnv('NEXT_PUBLIC_SITE_TITLE', 'Halit Alptekin'),
-  siteDescription: getEnv(
-    'NEXT_PUBLIC_SITE_DESCRIPTION',
-    'Malware, reverse engineering, and offensive security research.',
-  ),
-  siteUrl: getEnv('NEXT_PUBLIC_SITE_URL', 'https://halit.alptekin.im'),
-  authorName: getEnv('NEXT_PUBLIC_AUTHOR_NAME', 'Halit Alptekin'),
-  authorEmail: getEnv('NEXT_PUBLIC_AUTHOR_EMAIL', 'halit@alptekin.im'),
-  twitterHandle: getEnv('NEXT_PUBLIC_TWITTER_HANDLE', 'halitalptekin'),
-  linkedinHandle: getEnv('NEXT_PUBLIC_LINKEDIN_HANDLE', 'halitalptekin'),
-  githubHandle: getEnv('NEXT_PUBLIC_GITHUB_HANDLE', 'halitalptekin'),
+  siteTitle: getEnv('NEXT_PUBLIC_SITE_TITLE'),
+  siteDescription: getEnv('NEXT_PUBLIC_SITE_DESCRIPTION'),
+  siteUrl: getEnv('NEXT_PUBLIC_SITE_URL'),
+  authorName: getEnv('NEXT_PUBLIC_AUTHOR_NAME'),
+  authorEmail: getEnv('NEXT_PUBLIC_AUTHOR_EMAIL'),
+  twitterHandle: getEnv('NEXT_PUBLIC_TWITTER_HANDLE'),
+  linkedinHandle: getEnv('NEXT_PUBLIC_LINKEDIN_HANDLE'),
+  githubHandle: getEnv('NEXT_PUBLIC_GITHUB_HANDLE'),
 
   vaultPath: getEnv('VAULT_PATH') || undefined,
 
@@ -77,7 +77,7 @@ export const config: AppConfig = {
   pgpPrivateKeyPath: getEnv('NEXT_PUBLIC_PGP_PRIVATE_KEY_PATH') || undefined,
   pgpPublicKeyPath: getEnv('NEXT_PUBLIC_PGP_PUBLIC_KEY_PATH') || undefined,
 
-  appVersion: getEnv('NEXT_PUBLIC_APP_VERSION', '0.1.0'),
-  baseUrl: getEnv('NEXT_PUBLIC_BASE_URL', ''),
+  appVersion: getEnv('NEXT_PUBLIC_APP_VERSION'),
+  baseUrl: getEnv('NEXT_PUBLIC_BASE_URL'),
   buildMode: getEnv('NODE_ENV', 'development') as AppConfig['buildMode'],
 };

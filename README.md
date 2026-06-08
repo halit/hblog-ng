@@ -46,9 +46,16 @@ stale, run `npm run prepare-data`.
 
 ## Configuration
 
-Edit [`.env`](.env) to set the site title, author, and social handles. These
-`NEXT_PUBLIC_*` values are public; they're inlined into the static build. To
-override them locally, use a git-ignored `.env.local`.
+The committed [`.env`](.env) file holds the site's defaults — title,
+description, URL, author, and social handles. These `NEXT_PUBLIC_*` values are
+public by design; they're inlined into the static build.
+
+To run your own instance, edit [`.env`](.env) directly, or override individual
+values with a git-ignored `.env.local` (which takes precedence and is never
+committed). Next.js loads both automatically for `dev` and `build`.
+
+Keep private material — PGP private keys, passphrases — out of `.env`. Put it in
+`.env.local` or pass it through the environment at build time.
 
 ## Content
 
