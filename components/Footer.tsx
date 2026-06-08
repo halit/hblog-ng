@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { formatBytes } from '../utils';
+import { config } from '../config/env';
 import { getPathFromId } from '../lib/routing';
 import { getVaultDataSync } from '../lib/vault-cache';
 import { VaultNode } from '../types/vault';
@@ -46,8 +47,8 @@ const Footer: React.FC<FooterProps> = ({ rx, tx }) => {
     }
   }, []);
 
-  // Get version from environment variable or fallback to package.json version
-  const version = process.env.NEXT_PUBLIC_APP_VERSION || process.env.npm_package_version || '0.0.0';
+  // Single source of truth: package.json version, injected via next.config.mjs
+  const version = config.appVersion;
   const projectName = blogProject?.title || 'hblog-ng';
 
   return (

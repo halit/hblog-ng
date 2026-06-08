@@ -8,7 +8,12 @@
  * `getEnv` reads from process.env (Node / Next.js build) first, then falls
  * back to window.__ENV__ (runtime injection), then to the supplied default.
  * Every field in `config` calls getEnv exactly once — no double-reads.
+ *
+ * The app version is the single exception: it comes straight from
+ * `package.json` (the one place a version lives), not from the environment.
  */
+
+import { version as packageVersion } from '../package.json';
 
 export interface AppConfig {
   // Site metadata
@@ -77,7 +82,7 @@ export const config: AppConfig = {
   pgpPrivateKeyPath: getEnv('NEXT_PUBLIC_PGP_PRIVATE_KEY_PATH') || undefined,
   pgpPublicKeyPath: getEnv('NEXT_PUBLIC_PGP_PUBLIC_KEY_PATH') || undefined,
 
-  appVersion: getEnv('NEXT_PUBLIC_APP_VERSION'),
+  appVersion: packageVersion,
   baseUrl: getEnv('NEXT_PUBLIC_BASE_URL'),
   buildMode: getEnv('NODE_ENV', 'development') as AppConfig['buildMode'],
 };
