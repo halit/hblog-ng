@@ -1,6 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
-import ErrorPageTemplate from '@/components/ErrorPageTemplate';
+import ErrorPageTemplate from '@/components/ui/ErrorPageTemplate';
 import SmartSuggestions from '@/components/SmartSuggestions';
 
 export const metadata: Metadata = {

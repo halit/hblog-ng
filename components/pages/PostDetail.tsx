@@ -3,16 +3,16 @@
 import React, { useMemo } from 'react';
 import NextImage from 'next/image';
 import { Link as LinkIcon } from 'lucide-react';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
+import MarkdownRenderer from '@/components/content/MarkdownRenderer';
 import PostTimeline from '@/components/PostTimeline';
-import ScrollToTop from '@/components/ScrollToTop';
-import TableOfContents from '@/components/TableOfContents';
+import ScrollToTop from '@/components/layout/ScrollToTop';
+import TableOfContents from '@/components/content/TableOfContents';
 import { calculateSpectrum } from '@/utils';
 import { VaultNode } from '@/types/vault';
 import UnifiedDetailHeader from '@/components/UnifiedDetailHeader';
 import { getIconComponent, getDefaultIconName } from '@/utils/icons';
 import NodeCard from '@/components/NodeCard';
-import SpectrumMeter from '@/components/SpectrumMeter';
+import SpectrumMeter from '@/components/ui/SpectrumMeter';
 
 // Helper function to check if content has headings for TOC
 const hasHeadings = (content: string): boolean => {

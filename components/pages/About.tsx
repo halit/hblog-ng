@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { VaultNode } from '@/types/vault';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
+import MarkdownRenderer from '@/components/content/MarkdownRenderer';
 
 interface AboutProps {
   activeNode: VaultNode;

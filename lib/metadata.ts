@@ -13,12 +13,28 @@ export interface PageMetadataOptions {
   url?: string;
 }
 
+// Shared by both the site-level and per-node metadata objects below.
+const ROBOTS: Metadata['robots'] = {
+  index: true,
+  follow: true,
+  googleBot: {
+    index: true,
+    follow: true,
+    'max-video-preview': -1,
+    'max-image-preview': 'large',
+    'max-snippet': -1,
+  },
+};
+
+const AUTHORS: Metadata['authors'] = [
+  { name: config.authorName, ...(config.authorEmail && { url: `mailto:${config.authorEmail}` }) },
+];
+
 export function generatePageMetadata(node?: VaultNode, options?: PageMetadataOptions): Metadata {
   const siteTitle = config.siteTitle;
   const siteDescription = config.siteDescription;
   const siteUrl = config.siteUrl;
   const metadataBase = new URL(siteUrl);
-  const authorEmail = config.authorEmail;
 
   if (!node) {
     const title = options?.title ? `${options.title} | ${siteTitle}` : siteTitle;
@@ -34,20 +50,10 @@ export function generatePageMetadata(node?: VaultNode, options?: PageMetadataOpt
       },
       description: description,
       keywords: keywords.length > 0 ? keywords : undefined,
-      authors: [{ name: config.authorName, ...(authorEmail && { url: `mailto:${authorEmail}` }) }],
+      authors: AUTHORS,
       creator: config.authorName,
       publisher: config.authorName,
-      robots: {
-        index: true,
-        follow: true,
-        googleBot: {
-          index: true,
-          follow: true,
-          'max-video-preview': -1,
-          'max-image-preview': 'large',
-          'max-snippet': -1,
-        },
-      },
+      robots: ROBOTS,
       openGraph: {
         title,
         description,
@@ -109,20 +115,10 @@ export function generatePageMetadata(node?: VaultNode, options?: PageMetadataOpt
     title,
     description,
     keywords: keywords.length > 0 ? keywords : undefined,
-    authors: [{ name: config.authorName, ...(authorEmail && { url: `mailto:${authorEmail}` }) }],
+    authors: AUTHORS,
     creator: config.authorName,
     publisher: config.authorName,
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
+    robots: ROBOTS,
     openGraph: {
       title,
       description,

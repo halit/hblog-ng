@@ -2,8 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { VaultNode } from '../types/vault';
-import { getPathFromId } from '../lib/routing';
+import { VaultNode } from '@/types/vault';
+import { getPathFromId } from '@/lib/routing';
 
 interface NavLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   id: string;

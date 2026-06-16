@@ -3,4 +3,4 @@ export { ContactModal } from './modals/ContactModal';
 export { BibtexModal } from './modals/BibtexModal';
 export { SignatureModal } from './modals/SignatureModal';
 export { ShareModal } from './modals/ShareModal';
-export { default as NeuralLinkModal } from './NeuralLinkModal';
+export { default as NeuralLinkModal } from '@/components/graph/NeuralLinkModal';

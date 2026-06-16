@@ -3,11 +3,11 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Clock, Database } from 'lucide-react';
-import SpectrumMeter from '@/components/SpectrumMeter';
+import SpectrumMeter from '@/components/ui/SpectrumMeter';
 import { calculateSpectrum, calculateReadingTime, formatBytes } from '@/utils';
 import { VaultNode } from '@/types/vault';
-import { NavLink } from '@/components/NavLink';
-import KeywordTags from '@/components/KeywordTags';
+import { NavLink } from '@/components/ui/NavLink';
+import KeywordTags from '@/components/ui/KeywordTags';
 import { getIconComponent, getDefaultIconName } from '@/utils/icons';
 
 interface NodeCardProps {

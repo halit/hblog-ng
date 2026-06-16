@@ -5,7 +5,7 @@ import { BlockMath } from 'react-katex';
 import { Copy, CheckCircle, Sigma } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import 'katex/dist/katex.min.css';
-import BlockHeader from './BlockHeader';
+import BlockHeader from '@/components/ui/BlockHeader';
 
 interface LatexRendererProps {
   math: string;

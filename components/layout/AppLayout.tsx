@@ -2,9 +2,9 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import React from 'react';
-import { ProgressBar } from '@/components/ProgressBar';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import { ProgressBar } from '@/components/layout/ProgressBar';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 import { ContactModal, NeuralLinkModal } from '@/components/Modals';
 import SearchModal from '@/components/SearchModal';
 import CommandPalette from '@/components/CommandPalette';

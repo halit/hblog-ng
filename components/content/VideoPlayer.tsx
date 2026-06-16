@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useMemo } from 'react';
 import { Video, Terminal } from 'lucide-react';
-import BlockHeader from './BlockHeader';
-import { getVideoInfo } from '../utils/video';
+import BlockHeader from '@/components/ui/BlockHeader';
+import { getVideoInfo } from '@/utils/video';
 import 'asciinema-player/dist/bundle/asciinema-player.css';
 
 interface VideoPlayerProps {

@@ -2,11 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { formatBytes } from '../utils';
-import { config } from '../config/env';
-import { getPathFromId } from '../lib/routing';
-import { getVaultDataSync } from '../lib/vault-cache';
-import { VaultNode } from '../types/vault';
+import { formatBytes } from '@/utils';
+import { config } from '@/config/env';
+import { getPathFromId } from '@/lib/routing';
+import { getVaultDataSync } from '@/lib/vault-cache';
+import { VaultNode } from '@/types/vault';
 
 interface FooterProps {
   rx: number;

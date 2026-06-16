@@ -17,8 +17,13 @@ To keep sessions fast, **do not scan these** unless a task explicitly requires i
   (binary content)
 
 Source lives in `app/`, `components/`, `config/`, `hooks/`, `lib/`, `scripts/`,
-`types/`, and `utils/`. Vault **Markdown** (`vault/**/*.md` and the bundled
-`example-vault/**/*.md`) is content, not code.
+`types/`, and `utils/`. `components/` is grouped by concern — `layout/`,
+`content/` (Markdown block renderers), `ui/` (small reusables), `graph/`,
+`markdown/`, `modals/`, `pages/` — with feature-level components at the root.
+Reuse `components/modals/Modal.tsx` (modal shell) and
+`hooks/useCopyToClipboard.ts` instead of re-rolling that boilerplate. Vault
+**Markdown** (`vault/**/*.md` and bundled `example-vault/**/*.md`) is content,
+not code.
 
 ## Project overview
 
@@ -49,11 +54,9 @@ npm run sign-posts       # PGP-sign vault posts (also runs first in prepare-data
 ```
 
 `prepare-data` runs `sign-posts` first so signatures are fresh before
-`parse-vault` embeds them into `vault.json`. Signing is **idempotent** (it only
-re-signs posts whose content changed, like image→WebP conversion skips unchanged
-files) and **skips gracefully** when no signing key is configured
-(`NEXT_PUBLIC_PGP_*`), so fresh clones, CI, and the `example-vault` demo still
-build. Provide the key (via `.env.local` / `.secrets/`) to actually sign.
+`parse-vault` embeds them. Signing is idempotent (re-signs only changed posts)
+and skips gracefully when no `NEXT_PUBLIC_PGP_*` key is set, so keyless clones
+and CI still build.
 
 Run `npm run prepare-data` after changing vault content (the resolved vault or
 `example-vault/`) before building.
@@ -85,11 +88,12 @@ research`), `spectrum` (`offensive | defensive | misc`, drives graph color),
 - **`lib/page-logic.tsx`** — `createCollectionPage()` and `createDetailPage()`
   factories back the `app/{posts,projects,research}` routes; each route file just
   spreads the result. Add a new content type here.
-- **`lib/markdown/extensions.ts`** + **`components/MarkdownRenderer.tsx`** /
-  **`components/markdown/*`** — custom `marked` extensions: `[[WikiLinks]]`,
-  `![[embeds]]`, `$math$`/`$$math$$` (KaTeX), Mermaid fences, `[ref:key]`
-  citations. `lib/rss-markdown.ts` is a separate string renderer for feeds.
-- **`components/NeuralGraph.tsx`** + **`components/graph/*`** + **`hooks/graph/*`**
+- **`lib/markdown/extensions.ts`** +
+  **`components/content/MarkdownRenderer.tsx`** + **`components/markdown/*`**
+  — custom `marked` extensions: `[[WikiLinks]]`, `![[embeds]]`,
+  `$math$`/`$$math$$` (KaTeX), Mermaid fences, `[ref:key]` citations.
+  `lib/rss-markdown.ts` is a separate string renderer for feeds.
+- **`components/graph/*`** (incl. `NeuralGraph.tsx`) + **`hooks/graph/*`**
   — canvas-based D3 force simulation (not SVG). Config in `config/graph.ts`;
   colors `offense: #ff0055`, `defense: #00e5ff`.
 - **`lib/metadata.ts`** — `generateMetadata` helpers: per-page Open Graph /
@@ -103,10 +107,10 @@ manifest}.ts` cover the rest of SEO/PWA.
 - **Search** — MiniSearch. The index is built in `parse-vault` and written to
   `public/search-index.json`, lazy-loaded client-side via `lib/search-client.ts`
   (`components/SearchModal.tsx`, command palette in `config/commands.ts`).
-- **PGP** — `scripts/sign-posts.ts` (`npm run sign-posts`) writes detached
-  signatures into note frontmatter; in-browser verification uses OpenPGP.js
-  (`components/modals/SignatureModal.tsx`, `hooks/usePublicKey.ts`). Private key
-  material lives in `.secrets/` and is never inlined into `NEXT_PUBLIC_*`.
+- **PGP** — `scripts/sign-posts.ts` writes detached `.asc` signatures into the
+  vault's `assets/signatures/`; `parse-vault` embeds them and OpenPGP.js verifies
+  in-browser (`components/modals/SignatureModal.tsx`, `hooks/usePublicKey.ts`).
+  Key material stays in `.env.local` / `.secrets/`, never committed.
 - **Asset pipeline** — `scripts/optimize-images.ts` converts raster images to
   **WebP** (Sharp, fit 1920×1920) into `public/images/`;
   `scripts/generate-og-images.ts` renders the 1200×630 OG PNG per note.

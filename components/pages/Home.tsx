@@ -1,11 +1,11 @@
 import React from 'react';
 import { Wifi, ArrowRight } from 'lucide-react';
-import HexBackground from '@/components/HexBackground';
-import GlitchText from '@/components/GlitchText';
-import SpectrumMeter from '@/components/SpectrumMeter';
+import HexBackground from '@/components/layout/HexBackground';
+import GlitchText from '@/components/ui/GlitchText';
+import SpectrumMeter from '@/components/ui/SpectrumMeter';
 import { calculateSpectrum } from '@/utils';
 import { VaultNode } from '@/types/vault';
-import { NavLink } from '@/components/NavLink';
+import { NavLink } from '@/components/ui/NavLink';
 
 interface HomeProps {
   latestPost: VaultNode;

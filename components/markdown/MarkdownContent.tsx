@@ -4,24 +4,25 @@ import { Token, Tokens } from 'marked';
 import { Hash, CheckCircle, Copy } from 'lucide-react';
 import { CalloutBlock } from './CalloutBlock';
 import { getIconComponent } from '@/utils/icons';
-import BlockHeader from '../BlockHeader';
-import FileAttachment from '../FileAttachment';
-import VideoPlayer from '../VideoPlayer';
-import ImageWithZoom from '../ImageWithZoom';
+import BlockHeader from '@/components/ui/BlockHeader';
+import FileAttachment from '@/components/content/FileAttachment';
+import VideoPlayer from '@/components/content/VideoPlayer';
+import ImageWithZoom from '@/components/content/ImageWithZoom';
 import LinkPreview from '../LinkPreview';
-import TerminalBlock from '../TerminalBlock';
+import TerminalBlock from '@/components/content/TerminalBlock';
 import { smoothScrollToId, generateHeadingId } from '@/utils';
 import { getPathFromId } from '@/lib/routing';
 import { VaultNode } from '@/types/vault';
 import { convertTextEmojis } from '@/utils/emoji';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 // Lazy Components
-const MermaidRenderer = lazy(() => import('../MermaidRenderer'));
-const LatexRenderer = lazy(() => import('../LatexRenderer'));
-const LatexInline = lazy(() => import('../LatexInline'));
-const QueryRenderer = lazy(() => import('../QueryRenderer'));
-const ChartRenderer = lazy(() => import('../ChartRenderer'));
-const ImageGallery = lazy(() => import('../ImageGallery'));
+const MermaidRenderer = lazy(() => import('@/components/content/MermaidRenderer'));
+const LatexRenderer = lazy(() => import('@/components/content/LatexRenderer'));
+const LatexInline = lazy(() => import('@/components/content/LatexInline'));
+const QueryRenderer = lazy(() => import('@/components/content/QueryRenderer'));
+const ChartRenderer = lazy(() => import('@/components/content/ChartRenderer'));
+const ImageGallery = lazy(() => import('@/components/content/ImageGallery'));
 const HighlightedCode = lazy(() =>
   import('react-syntax-highlighter').then((m) => ({ default: m.PrismAsyncLight })),
 );
@@ -676,13 +677,9 @@ const InlineRenderer: React.FC<{
 };
 
 const CodeBlock = ({ code, language }: { code: string; language: string }) => {
-  const [copied, setCopied] = React.useState(false);
+  const { copied, copy } = useCopyToClipboard();
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const copyToClipboard = () => copy(code);
 
   return (
     <div className="relative group my-8">

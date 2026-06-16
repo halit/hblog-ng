@@ -7,10 +7,10 @@ import { useVaultData } from '../hooks/useVaultData';
 import { performSearch, EnhancedSearchResult } from '../lib/search-client';
 import { Search } from 'lucide-react';
 import { calculateSpectrum } from '../utils';
-import SpectrumMeter from './SpectrumMeter';
+import SpectrumMeter from '@/components/ui/SpectrumMeter';
 import { getIconComponent } from '../utils/icons';
-import KeywordTags from '@/components/KeywordTags';
-import BlockHeader from '@/components/BlockHeader';
+import KeywordTags from '@/components/ui/KeywordTags';
+import BlockHeader from '@/components/ui/BlockHeader';
 import { getPathFromId } from '@/lib/routing';
 
 interface SmartSuggestionsProps {

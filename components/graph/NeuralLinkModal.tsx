@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useLazyVaultData } from '@/hooks/useLazyVaultData';
-import NeuralGraph from './NeuralGraph';
+import NeuralGraph from '@/components/graph/NeuralGraph';
 
 interface NeuralLinkModalProps {
   isOpen: boolean;

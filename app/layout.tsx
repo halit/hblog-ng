@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import { JetBrains_Mono, Share_Tech_Mono } from 'next/font/google';
 import './index.css';
-import BugBountyNotice from '@/components/BugBountyNotice';
-import AppLayout from '@/components/AppLayout';
+import BugBountyNotice from '@/components/ui/BugBountyNotice';
+import AppLayout from '@/components/layout/AppLayout';
 import { config } from '@/config/env';
 
 const jetbrainsMono = JetBrains_Mono({

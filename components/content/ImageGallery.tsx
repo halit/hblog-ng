@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import NextImage from 'next/image';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import ImageCard from './ImageCard';
+import ImageCard from '@/components/content/ImageCard';
 
 interface GalleryImage {
   src: string;

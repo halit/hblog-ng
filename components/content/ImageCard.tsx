@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import NextImage from 'next/image';
 import { ZoomIn, Image as ImageIcon } from 'lucide-react';
-import BlockHeader from './BlockHeader';
+import BlockHeader from '@/components/ui/BlockHeader';
 
 interface ImageCardProps {
   src: string;

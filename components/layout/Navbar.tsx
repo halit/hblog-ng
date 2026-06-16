@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Mail, Menu, X, Search, HelpCircle, Network } from 'lucide-react';
-import { config } from '../config/env';
+import { config } from '@/config/env';
 
 interface NavbarProps {
   setContactOpen: (v: boolean) => void;

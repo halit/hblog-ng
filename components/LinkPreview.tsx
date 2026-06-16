@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useLazyVaultData } from '../hooks/useLazyVaultData';
 import { getIconComponent } from '../utils/icons';
-import SpectrumMeter from './SpectrumMeter';
+import SpectrumMeter from '@/components/ui/SpectrumMeter';
 import { calculateSpectrum } from '../utils';
 
 interface LinkPreviewProps {

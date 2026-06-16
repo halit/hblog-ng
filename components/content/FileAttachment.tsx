@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Download, FileText, Image as ImageIcon, FileCode, Archive } from 'lucide-react';
-import { formatBytes } from '../utils';
+import { formatBytes } from '@/utils';
 
 interface FileAttachmentProps {
   fileName: string;

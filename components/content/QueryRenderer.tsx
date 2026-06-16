@@ -2,14 +2,14 @@
 
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useLazyVaultData } from '../hooks/useLazyVaultData';
+import { useLazyVaultData } from '@/hooks/useLazyVaultData';
 import { Terminal } from 'lucide-react';
-import { NavLink } from './NavLink';
-import KeywordTags from './KeywordTags';
-import SpectrumMeter from './SpectrumMeter';
-import { calculateSpectrum, getNodeSortDate } from '../utils';
-import { getIconComponent } from '../utils/icons';
-import BlockHeader from './BlockHeader';
+import { NavLink } from '@/components/ui/NavLink';
+import KeywordTags from '@/components/ui/KeywordTags';
+import SpectrumMeter from '@/components/ui/SpectrumMeter';
+import { calculateSpectrum, getNodeSortDate } from '@/utils';
+import { getIconComponent } from '@/utils/icons';
+import BlockHeader from '@/components/ui/BlockHeader';
 
 interface QueryRendererProps {
   query: string;

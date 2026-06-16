@@ -3,14 +3,14 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { ExternalLink } from 'lucide-react';
-import { useVaultData } from '../hooks/useVaultData';
-import { createSearchRegex } from '../lib/search-client';
-import { formatBibtexEntry } from '../lib/bibtex-client';
+import { useVaultData } from '@/hooks/useVaultData';
+import { createSearchRegex } from '@/lib/search-client';
+import { formatBibtexEntry } from '@/lib/bibtex-client';
 import referencesData from '@/data/references.json';
 import { Marked } from 'marked';
-import { obsidianExtensions } from '../lib/markdown/extensions';
-import { MarkdownContent } from './markdown/MarkdownContent';
-import { BibtexEntry } from '../lib/bibtex-client';
+import { obsidianExtensions } from '@/lib/markdown/extensions';
+import { MarkdownContent } from '@/components/markdown/MarkdownContent';
+import { BibtexEntry } from '@/lib/bibtex-client';
 
 // Lazy singleton — avoids stacking extensions on the global marked instance
 // on every module load (observable in Next.js hot-reload).

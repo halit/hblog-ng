@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import ErrorPageTemplate from '@/components/ErrorPageTemplate';
+import ErrorPageTemplate from '@/components/ui/ErrorPageTemplate';
 import SmartSuggestions from '@/components/SmartSuggestions';
 
 export default function Error({

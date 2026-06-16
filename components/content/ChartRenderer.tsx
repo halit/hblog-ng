@@ -28,7 +28,7 @@ import {
   CheckCircle,
   Copy,
 } from 'lucide-react';
-import BlockHeader from './BlockHeader';
+import BlockHeader from '@/components/ui/BlockHeader';
 import html2canvas from 'html2canvas';
 import { BRAND_COLORS, CHART_PALETTE } from '@/config/theme';
 

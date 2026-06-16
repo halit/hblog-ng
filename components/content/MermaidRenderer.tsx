@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Share2, Copy, CheckCircle } from 'lucide-react';
-import BlockHeader from './BlockHeader';
+import BlockHeader from '@/components/ui/BlockHeader';
 
 interface Mermaid {
   initialize: (config: unknown) => void;

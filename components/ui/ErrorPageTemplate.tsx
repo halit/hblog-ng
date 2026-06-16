@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { ArrowLeft, AlertTriangle } from 'lucide-react';
-import GlitchText from './GlitchText';
-import HexBackground from './HexBackground';
+import GlitchText from '@/components/ui/GlitchText';
+import HexBackground from '@/components/layout/HexBackground';
 import { useRouter } from 'next/navigation';
 
 interface ErrorPageTemplateProps {

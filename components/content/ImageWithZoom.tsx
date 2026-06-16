@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import NextImage from 'next/image';
 import { X } from 'lucide-react';
-import ImageCard from './ImageCard';
+import ImageCard from '@/components/content/ImageCard';
 
 interface ImageWithZoomProps {
   src: string;

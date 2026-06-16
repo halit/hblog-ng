@@ -1,6 +1,7 @@
 import React from 'react';
 import { Terminal, Copy, CheckCircle } from 'lucide-react';
-import BlockHeader from './BlockHeader';
+import BlockHeader from '@/components/ui/BlockHeader';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 interface TerminalBlockProps {
   content: string;
@@ -8,7 +9,7 @@ interface TerminalBlockProps {
 }
 
 const TerminalBlock: React.FC<TerminalBlockProps> = ({ content, title = 'terminal' }) => {
-  const [copied, setCopied] = React.useState(false);
+  const { copied, copy } = useCopyToClipboard();
 
   const copyToClipboard = () => {
     // Extract only the commands (lines starting with $) to copy
@@ -19,11 +20,7 @@ const TerminalBlock: React.FC<TerminalBlockProps> = ({ content, title = 'termina
       .join('\n');
 
     // If no commands found with $, just copy the whole content
-    const textToCopy = commands || content;
-
-    navigator.clipboard.writeText(textToCopy);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    copy(commands || content);
   };
 
   const lines = content.split('\n');

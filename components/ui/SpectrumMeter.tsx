@@ -1,5 +1,5 @@
 import React from 'react';
-import { SpectrumDistribution } from '../utils';
+import { SpectrumDistribution } from '@/utils';
 
 interface SpectrumMeterProps {
   distribution: SpectrumDistribution;

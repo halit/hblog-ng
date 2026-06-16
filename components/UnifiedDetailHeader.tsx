@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { Share2, Lock, Network, Github, ExternalLink, Quote } from 'lucide-react';
-import KeywordTags from './KeywordTags';
+import KeywordTags from '@/components/ui/KeywordTags';
 import { VaultNode } from '@/types/vault';
 import { getPathFromId } from '@/lib/routing';
 
