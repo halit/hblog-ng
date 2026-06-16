@@ -36,6 +36,14 @@
     "serve": "npx serve out",
     "prepare": "husky"
   },
+  "overrides": {
+    "dompurify": "^3.4.10",
+    "postcss": "^8.5.15",
+    "esbuild": "^0.28.1",
+    "miniflare": {
+      "ws": "^8.21.0"
+    }
+  },
   "lint-staged": {
     "*.{ts,tsx,js,mjs,cjs}": [
       "eslint --fix --no-warn-ignored",
