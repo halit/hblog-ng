@@ -149,12 +149,13 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ id, children, className }) =>
                   {targetNode.type}
                 </div>
 
-                {/* Title & Icon */}
-                <div className="flex items-center gap-2 mb-2 pr-12">
-                  <div className="p-1.5 bg-gray-900 rounded text-gray-400">
+                {/* Title & Icon — pr-24 reserves room for the absolute type badge
+                    above (e.g. "RESEARCH") so the truncated title can't run under it. */}
+                <div className="flex items-center gap-2 mb-2 pr-24">
+                  <div className="p-1.5 bg-gray-900 rounded text-gray-400 flex-shrink-0">
                     <Icon size={14} />
                   </div>
-                  <h4 className="text-sm font-bold text-white font-display line-clamp-1">
+                  <h4 className="text-sm font-bold text-white font-display line-clamp-1 min-w-0">
                     {targetNode.title}
                   </h4>
                 </div>

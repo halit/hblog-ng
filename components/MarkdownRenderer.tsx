@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { usePathname } from 'next/navigation';
+import { ExternalLink } from 'lucide-react';
 import { useVaultData } from '../hooks/useVaultData';
 import { createSearchRegex } from '../lib/search-client';
 import { formatBibtexEntry } from '../lib/bibtex-client';
@@ -234,56 +235,62 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           </h1>
           <div className="space-y-2">
             {references.map((ref) => {
-              // Clean up the label - remove any double periods
-              let displayLabel = ref.label || '';
-              if (displayLabel) {
-                // Fix double periods
-                displayLabel = displayLabel.replace(/\.{2,}/g, '.');
-                // Ensure proper spacing
-                displayLabel = displayLabel.replace(/\s+/g, ' ').trim();
-              }
+              // Clean up the label: collapse accidental double periods and runs
+              // of whitespace produced by missing bibtex fields.
+              const displayLabel = (ref.label || '')
+                .replace(/\.{2,}/g, '.')
+                .replace(/\s+/g, ' ')
+                .trim();
 
-              return (
-                <div
-                  id={`ref-${ref.number}`}
-                  key={ref.id}
-                  className={`text-sm text-gray-300 font-mono mb-3 p-3 rounded border transition-all duration-500 flex gap-3 ${
-                    highlightedRef === ref.number
-                      ? 'border-offense bg-offense/5 shadow-[0_0_20px_rgba(255,0,85,0.2)]'
-                      : 'border-gray-800/50 bg-[#0a0f14] hover:border-offense/50 hover:shadow-[0_0_20px_-5px_rgba(255,0,85,0.15)]'
-                  }`}
-                >
+              const isHighlighted = highlightedRef === ref.number;
+
+              // Shared card styling. When a source URL exists the whole card is a
+              // link; otherwise it renders as a static box. `pr-10` reserves room
+              // for the corner ↗ affordance.
+              const cardClass = `group relative block no-underline font-mono text-sm mb-3 p-3 rounded border transition-all duration-500 ${
+                isHighlighted
+                  ? 'border-offense bg-offense/5 shadow-[0_0_20px_rgba(255,0,85,0.2)]'
+                  : 'border-gray-800/50 bg-[#0a0f14]'
+              } ${
+                ref.url
+                  ? 'pr-10 cursor-pointer hover:border-offense/50 hover:bg-offense/[0.03] hover:shadow-[0_0_20px_-5px_rgba(255,0,85,0.15)]'
+                  : ''
+              }`;
+
+              const body = (
+                <div className="flex gap-3">
                   <span className="text-offense font-bold text-xs select-none flex-shrink-0 mt-0.5">
                     [{ref.number}]
                   </span>
-                  <div className="flex-1 flex flex-col gap-1">
-                    {displayLabel ? (
-                      <>
-                        <span className="text-gray-300 leading-relaxed">{displayLabel}</span>
-                        {ref.url && (
-                          <a
-                            href={ref.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-defense hover:text-defense/80 border-b border-dotted border-defense/50 hover:border-defense w-fit text-xs mt-1"
-                          >
-                            View Source ↗
-                          </a>
-                        )}
-                      </>
-                    ) : ref.url ? (
-                      <a
-                        href={ref.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-defense hover:text-defense/80 border-b border-dotted border-defense/50 hover:border-defense"
-                      >
-                        {ref.url}
-                      </a>
-                    ) : (
-                      <span className="text-gray-500">{ref.id}</span>
-                    )}
-                  </div>
+                  <span className="flex-1 text-gray-300 leading-relaxed">
+                    {displayLabel || ref.id}
+                  </span>
+                </div>
+              );
+
+              if (ref.url) {
+                return (
+                  <a
+                    id={`ref-${ref.number}`}
+                    key={ref.id}
+                    href={ref.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cardClass}
+                    title={ref.url}
+                  >
+                    {body}
+                    <ExternalLink
+                      size={14}
+                      className="absolute top-3 right-3 text-gray-600 group-hover:text-offense transition-colors"
+                    />
+                  </a>
+                );
+              }
+
+              return (
+                <div id={`ref-${ref.number}`} key={ref.id} className={cardClass}>
+                  {body}
                 </div>
               );
             })}

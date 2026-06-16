@@ -256,12 +256,14 @@ function resolveAssetPath(
 
 /**
  * Remark plugin to prevent escaping of custom syntax by converting matches to HTML nodes
- * This ensures that [[WikiLinks]], [file:...], and [!CALLOUTS] pass through to the frontend
- * where they are rendered by the client-side markdown parser.
+ * This ensures that [[WikiLinks]], [file:...], [!CALLOUTS], and $math$ / $$math$$ pass
+ * through to the frontend where they are rendered by the client-side markdown parser.
+ * Math must be preserved verbatim: otherwise remark-stringify escapes `_` to `\_`, which
+ * KaTeX renders as a literal underscore instead of a subscript (e_1 -> "e_1", not e₁).
  */
 export function remarkPreserveSyntax() {
   const pattern =
-    /!?\[\[[^\]]+\]\]|\[(?:file|video|asciinema|ref|chart):[^\]]+\]|(?<=^|\n)\[![A-Za-z]+\]|MITRE ATT&CK/g;
+    /!?\[\[[^\]]+\]\]|\[(?:file|video|asciinema|ref|chart):[^\]]+\]|(?<=^|\n)\[![A-Za-z]+\]|MITRE ATT&CK|\$\$[\s\S]*?\$\$|\$[^\n$]+?\$/g;
 
   return (tree: Node) => {
     // 1. Merge nodes that were split by autolinks if they belong to custom syntax

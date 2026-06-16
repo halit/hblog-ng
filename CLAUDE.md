@@ -38,15 +38,22 @@ fresh clone still renders. Always resolve the vault via `getVaultPath()` /
 
 ```bash
 npm run dev              # Data pipeline + dev server with file watcher
-npm run prepare-data     # parse-vault → parse-bibtex → optimize-images → generate-og-images → copy-static-assets
+npm run prepare-data     # sign-posts → parse-vault → parse-bibtex → optimize-images → generate-og-images → copy-static-assets
 npm run build            # prepare-data + next build (static export to out/)
 npm run deploy           # build + wrangler pages deploy
 npm run lint             # ESLint (flat config)
 npm run format           # Prettier
 npm run test             # Vitest
 npm run analyze          # Bundle-size visualization
-npm run sign-posts       # PGP-sign vault posts
+npm run sign-posts       # PGP-sign vault posts (also runs first in prepare-data)
 ```
+
+`prepare-data` runs `sign-posts` first so signatures are fresh before
+`parse-vault` embeds them into `vault.json`. Signing is **idempotent** (it only
+re-signs posts whose content changed, like image→WebP conversion skips unchanged
+files) and **skips gracefully** when no signing key is configured
+(`NEXT_PUBLIC_PGP_*`), so fresh clones, CI, and the `example-vault` demo still
+build. Provide the key (via `.env.local` / `.secrets/`) to actually sign.
 
 Run `npm run prepare-data` after changing vault content (the resolved vault or
 `example-vault/`) before building.

@@ -1,3 +1,7 @@
+import { format, parseISO, isValid } from 'date-fns';
+import prettyBytes from 'pretty-bytes';
+import { slug as githubSlug } from 'github-slugger';
+
 export const calculateEntropy = (str: string): number => {
   const len = str.length;
   const frequencies = new Map<string, number>();
@@ -75,20 +79,11 @@ export const calculateReadingTime = (text: string): string => {
 };
 
 /**
- * Formats bytes into a human-readable string (e.g., 1.2 KB, 4.5 MB).
+ * Formats a byte count into a human-readable string (e.g., 1.2 kB, 4.5 MB).
  */
-export const formatBytes = (bytes: number, decimals = 2) => {
-  if (bytes === 0) return '0 B';
+export const formatBytes = (bytes: number): string => {
   if (!bytes || Number.isNaN(bytes)) return '0 B';
-
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const val = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-  return `${val} ${sizes[i] || 'B'}`;
+  return prettyBytes(bytes);
 };
 
 /**
@@ -104,36 +99,18 @@ export const formatDate = (dateString: string | undefined): string => {
 
   const str = String(dateString).trim();
 
-  // Handle year only: 2025
+  // Year only (2025): display verbatim, no month/day to render.
   if (/^\d{4}$/.test(str)) {
     return str;
   }
 
-  // Handle year-month: 2025-11
-  if (/^\d{4}-\d{2}$/.test(str)) {
-    const [y, m] = str.split('-').map(Number);
-    const date = new Date(y, m - 1);
-    return date.toLocaleDateString('default', { month: 'short', year: 'numeric' }).toUpperCase();
-  }
+  const date = parseDateSafe(str);
+  if (!isValid(date)) return str;
 
-  // Handle full date: 2025-11-05
-  // Parse manually to avoid timezone shifting
-  const ymdMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (ymdMatch) {
-    const [, y, m, d] = ymdMatch;
-    const date = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
-    return date
-      .toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric' })
-      .toUpperCase();
-  }
-
-  // Fallback to standard parsing
-  const date = new Date(str);
-  if (isNaN(date.getTime())) return str;
-
-  return date
-    .toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric' })
-    .toUpperCase();
+  // Year-month (2025-11) -> "NOV 2025"; full date -> "NOV 5, 2025".
+  // date-fns formats deterministically (independent of the host locale).
+  const pattern = /^\d{4}-\d{2}$/.test(str) ? 'MMM yyyy' : 'MMM d, yyyy';
+  return format(date, pattern).toUpperCase();
 };
 
 import { VaultNode } from '@/types/vault';
@@ -191,23 +168,10 @@ export const parseDateSafe = (dateString: string | undefined): Date => {
 
   const str = String(dateString).trim();
 
-  // YYYY
-  if (/^\d{4}$/.test(str)) {
-    return new Date(parseInt(str), 0, 1);
-  }
-
-  // YYYY-MM
-  if (/^\d{4}-\d{2}$/.test(str)) {
-    const [y, m] = str.split('-').map(Number);
-    return new Date(y, m - 1, 1);
-  }
-
-  // YYYY-MM-DD
-  const ymdMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (ymdMatch) {
-    const [, y, m, d] = ymdMatch;
-    return new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
-  }
+  // date-fns `parseISO` reads reduced-precision ISO strings (YYYY, YYYY-MM,
+  // YYYY-MM-DD) as local time, so date-only values don't shift across zones.
+  const parsed = parseISO(str);
+  if (isValid(parsed)) return parsed;
 
   return new Date(str);
 };
@@ -231,14 +195,12 @@ export const smoothScrollToId = (id: string, offset = 80) => {
  * Generates a consistent ID for headings to be used in TOC and anchor links.
  */
 export const generateHeadingId = (text: string, index: number): string => {
+  // Strip inline markdown (bold, code, links) first, then let github-slugger
+  // produce the anchor slug. The `index` prefix keeps IDs unique per page.
   const cleanText = text
     .replace(/\*\*/g, '')
     .replace(/`/g, '')
-    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
 
-  return `heading-${index}-${cleanText}`;
+  return `heading-${index}-${githubSlug(cleanText)}`;
 };

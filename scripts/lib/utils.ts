@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { escape } from 'html-escaper';
 
 /**
  * Ensures a directory exists, creating it recursively if necessary.
@@ -13,12 +14,7 @@ export function ensureDir(dirPath: string) {
  * Escapes special characters for XML/SVG.
  */
 export function escapeXML(str: string): string {
-  return str
-    .replace(/&/g, '\u0026amp;')
-    .replace(/</g, '\u0026lt;')
-    .replace(/>/g, '\u0026gt;')
-    .replace(/"/g, '\u0026quot;')
-    .replace(/'/g, '\u0026apos;');
+  return escape(str);
 }
 
 /**

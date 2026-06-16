@@ -2,6 +2,7 @@ import { watch } from 'fs';
 import { exec } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import debounce from 'just-debounce-it';
 import { getVaultPath } from './lib/vault-path.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,12 +39,7 @@ function runParser() {
   });
 }
 
-// Debounce helper
-let timeout: NodeJS.Timeout | null = null;
-function debouncedRunParser() {
-  if (timeout) clearTimeout(timeout);
-  timeout = setTimeout(runParser, 500);
-}
+const debouncedRunParser = debounce(runParser, 500);
 
 console.log(`👀 Watching for changes in ${vaultDir}...`);
 

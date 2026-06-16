@@ -52,8 +52,8 @@ export function generateBibtexString(entry: BibtexEntry): string {
 function formatArticle(fields: Record<string, string>): string {
   const parts: string[] = [];
 
-  if (fields.author) parts.push(fields.author);
   if (fields.title) parts.push(`"${fields.title}"`);
+  if (fields.author) parts.push(fields.author);
 
   let publication = '';
   if (fields.journal) publication += `In ${fields.journal}`;
@@ -69,8 +69,8 @@ function formatArticle(fields: Record<string, string>): string {
 function formatInProceedings(fields: Record<string, string>): string {
   const parts: string[] = [];
 
-  if (fields.author) parts.push(fields.author);
   if (fields.title) parts.push(`"${fields.title}"`);
+  if (fields.author) parts.push(fields.author);
 
   let publication = '';
   if (fields.booktitle) publication += `In ${fields.booktitle}`;
@@ -84,8 +84,8 @@ function formatInProceedings(fields: Record<string, string>): string {
 function formatTechReport(fields: Record<string, string>): string {
   const parts: string[] = [];
 
-  if (fields.author) parts.push(fields.author);
   if (fields.title) parts.push(`"${fields.title}"`);
+  if (fields.author) parts.push(fields.author);
 
   let info = fields.institution || '';
   if (fields.number) info += info ? `, Tech. Rep. ${fields.number}` : `Tech. Rep. ${fields.number}`;
@@ -99,8 +99,8 @@ function formatTechReport(fields: Record<string, string>): string {
 function formatMisc(fields: Record<string, string>): string {
   const parts: string[] = [];
 
-  if (fields.author) parts.push(fields.author);
   if (fields.title) parts.push(`"${fields.title}"`);
+  if (fields.author) parts.push(fields.author);
 
   let info = fields.organization || '';
   if (fields.year) info += info ? `, ${fields.year}` : fields.year;
@@ -114,8 +114,8 @@ function formatMisc(fields: Record<string, string>): string {
 function formatGeneric(fields: Record<string, string>): string {
   const parts: string[] = [];
 
-  if (fields.author) parts.push(fields.author);
   if (fields.title) parts.push(`"${fields.title}"`);
+  if (fields.author) parts.push(fields.author);
   if (fields.year) parts.push(fields.year);
 
   return joinSegments(parts);

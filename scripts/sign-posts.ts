@@ -75,6 +75,27 @@ async function signWithSystemGpg(content: string, keyId?: string): Promise<strin
   });
 }
 
+/**
+ * Returns true if `sigArmored` is a valid detached signature of `content` under
+ * `publicKey`. Used to make signing idempotent: a post whose signature already
+ * verifies against the current content is left untouched, so re-running the
+ * pipeline only re-signs posts whose content actually changed.
+ */
+async function signatureIsValid(
+  sigArmored: string,
+  content: string,
+  publicKey: openpgp.PublicKey,
+): Promise<boolean> {
+  try {
+    const signature = await openpgp.readSignature({ armoredSignature: sigArmored });
+    const message = await openpgp.createMessage({ text: content.trim() });
+    const result = await openpgp.verify({ message, signature, verificationKeys: publicKey });
+    return await result.signatures[0].verified;
+  } catch {
+    return false;
+  }
+}
+
 async function signContent(
   content: string,
   privateKeyArmored: string,
@@ -114,14 +135,27 @@ async function processFile(
   processor: VaultProcessor,
   privateKey: string | null,
   useSystemGpg: boolean,
-) {
+  publicKey: openpgp.PublicKey | null,
+): Promise<'signed' | 'skipped' | 'up-to-date' | 'failed'> {
   // Sign exactly what the site publishes as `node.content` (processed body,
   // trimmed) so the in-browser Verify button matches the served content.
   const bodyToSign = await processor.getSignableContent(filePath);
 
   if (!bodyToSign) {
     console.log(`  ! Skipping empty body: ${path.basename(filePath)}`);
-    return;
+    return 'skipped';
+  }
+
+  const filename = path.basename(filePath, '.md');
+  const sigPath = path.join(vaultAssetsDir, 'signatures', `${filename}.asc`);
+
+  // Idempotent: if a signature already exists and still verifies against the
+  // current content, leave it as-is. Only missing/stale signatures are rewritten.
+  if (publicKey && fs.existsSync(sigPath)) {
+    const existing = await fsPromises.readFile(sigPath, 'utf-8');
+    if (await signatureIsValid(existing, bodyToSign, publicKey)) {
+      return 'up-to-date';
+    }
   }
 
   try {
@@ -135,13 +169,12 @@ async function processFile(
       throw new Error('No signing method available');
     }
 
-    const filename = path.basename(filePath, '.md');
-    const sigPath = path.join(vaultAssetsDir, 'signatures', `${filename}.asc`);
-
     await fsPromises.writeFile(sigPath, signature);
     console.log(`  ✓ Signed: ${filename}`);
+    return 'signed';
   } catch (error) {
     console.error(`  ✗ Failed to sign ${path.basename(filePath)}:`, error);
+    return 'failed';
   }
 }
 
@@ -149,28 +182,38 @@ async function main() {
   const privateKey = await getPrivateKey();
   let useSystemGpg = false;
 
+  // Signing runs as part of `prepare-data`, so a missing key must NOT fail the
+  // build (fresh clones, CI, and the example-vault demo have no private key).
+  // Require an explicit key: a configured private key, or system GPG with an
+  // explicit KEY_ID — never sign with a stray default GPG key in CI.
   if (!privateKey) {
-    const gpgAvailable = await checkGpgAvailable();
-    if (gpgAvailable) {
+    if (KEY_ID && (await checkGpgAvailable())) {
       console.log('Private key not found in environment, falling back to system GPG.');
       useSystemGpg = true;
     } else {
-      console.error(
-        'Error: NEXT_PUBLIC_PGP_PRIVATE_KEY or NEXT_PUBLIC_PGP_PRIVATE_KEY_PATH not set, and system GPG not available.',
-      );
-      process.exit(1);
+      console.log('ℹ Skipping PGP signing: no signing key configured (set NEXT_PUBLIC_PGP_*).');
+      return;
+    }
+  }
+
+  if (!fs.existsSync(VAULT_DIR)) {
+    console.log(`ℹ Skipping PGP signing: vault directory not found (${VAULT_DIR}).`);
+    return;
+  }
+
+  // Derive the public key so we can verify existing signatures and skip posts
+  // whose content hasn't changed (idempotent re-runs).
+  let publicKey: openpgp.PublicKey | null = null;
+  if (privateKey) {
+    try {
+      publicKey = (await openpgp.readPrivateKey({ armoredKey: privateKey })).toPublic();
+    } catch {
+      // Verification is best-effort; without it every post is re-signed.
     }
   }
 
   console.log('Starting PGP signing process...');
   console.log(`Vault Directory: ${VAULT_DIR}`);
-
-  if (!fs.existsSync(VAULT_DIR)) {
-    console.error(`Error: Vault directory not found: ${VAULT_DIR}`);
-    console.error('Please set VAULT_PATH environment variable');
-    console.error('Example: VAULT_PATH=/path/to/vault npm run sign-posts');
-    process.exit(1);
-  }
 
   if (useSystemGpg) {
     console.log(`Method: System GPG ${KEY_ID ? `(Key ID: ${KEY_ID})` : '(Default Key)'}`);
@@ -207,11 +250,23 @@ async function main() {
 
   const processor = VaultProcessor.forVault(VAULT_DIR, ASSETS_DIR);
 
+  const tally = { signed: 0, 'up-to-date': 0, skipped: 0, failed: 0 };
   for (const file of files) {
-    await processFile(file, vaultAssetsDir, processor, privateKey, useSystemGpg);
+    const result = await processFile(
+      file,
+      vaultAssetsDir,
+      processor,
+      privateKey,
+      useSystemGpg,
+      publicKey,
+    );
+    tally[result]++;
   }
 
-  console.log('\nSigning complete.');
+  console.log(
+    `\nSigning complete: ${tally.signed} signed, ${tally['up-to-date']} up to date, ` +
+      `${tally.skipped} skipped, ${tally.failed} failed.`,
+  );
 }
 
 main().catch(console.error);
