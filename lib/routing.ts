@@ -77,7 +77,11 @@ export function extractInternalLinks(content: string): string[] {
   const links: Set<string> = new Set();
   let match;
   while ((match = linkRegex.exec(content)) !== null) {
-    links.add(match[1].trim());
+    // Obsidian wikilinks can carry an alias (`[[Target|Label]]`) and/or a
+    // heading/block anchor (`[[Target#Heading]]`, `[[Target#^block]]`). Only
+    // the target — before `|` and `#` — identifies the linked note.
+    const target = match[1].split('|')[0].split('#')[0].trim();
+    if (target) links.add(target);
   }
   return Array.from(links);
 }
