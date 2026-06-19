@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -7,6 +8,7 @@ import { VaultNode } from '../types/vault';
 import { loadVaultData } from '../lib/vault';
 import { calculateSpectrum, SpectrumDistribution } from '../utils';
 import { wrapText, escapeXML, ensureDir } from './lib/utils';
+import { config } from '../config/env';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -63,7 +65,11 @@ function generateSpectrumSVG(distribution: SpectrumDistribution): string {
 
 // --- Main Generation Logic ---
 
-function generateOGImageSVG(node: VaultNode, template: string): string {
+function generateOGImageSVG(
+  node: VaultNode,
+  template: string,
+  opts?: { hideTypeLabel?: boolean },
+): string {
   const title = node.title;
   const description = node.description || '';
   const type = node.type || 'blog';
@@ -120,8 +126,12 @@ function generateOGImageSVG(node: VaultNode, template: string): string {
     )
     .join('\n');
 
-  // Replace placeholders in template
-  const result = template
+  // Replace placeholders in template. Drop the whole "Type Label Pill" group
+  // when hidden, so the card shows no empty pill (used for the default card).
+  const base = opts?.hideTypeLabel
+    ? template.replace(/\s*<!-- Type Label Pill -->[\s\S]*?<\/g>/, '')
+    : template;
+  const result = base
     .replace('{{PARTICLES}}', particlesSVG)
     .replace('{{TYPE_LABEL}}', typeLabel)
     .replace('{{SPECTRUM_BARS}}', spectrumSVG)
@@ -219,6 +229,47 @@ async function generateOGImages() {
       if (fs.existsSync(tempSvgPath)) {
         fs.unlinkSync(tempSvgPath);
       }
+    }
+  }
+
+  // Default card: the social image for every non-content page (homepage,
+  // the posts/projects/research listings, 404, etc.) that has no node of its
+  // own. Built from the site identity so it regenerates with the pipeline.
+  const defaultNode = {
+    id: 'og-default',
+    title: config.siteTitle,
+    description: config.siteDescription,
+    type: 'profile',
+    content: '',
+  } as VaultNode;
+  const defaultPngPath = path.join(outputDir, 'default.png');
+  const defaultHash = crypto
+    .createHash('md5')
+    .update(defaultNode.title || '')
+    .update(defaultNode.description || '')
+    .digest('hex');
+
+  if (cache['og-default'] === defaultHash && fs.existsSync(defaultPngPath)) {
+    skipped++;
+  } else {
+    const tempSvgPath = path.join(outputDir, 'default.svg.tmp');
+    try {
+      fs.writeFileSync(
+        tempSvgPath,
+        generateOGImageSVG(defaultNode, template, { hideTypeLabel: true }),
+        'utf-8',
+      );
+      await sharp(tempSvgPath)
+        .resize(1200, 630)
+        .png({ compressionLevel: 9, quality: 100, palette: true })
+        .toFile(defaultPngPath);
+      fs.unlinkSync(tempSvgPath);
+      cache['og-default'] = defaultHash;
+      generated++;
+      console.log('  ✓ Generated OG image: default.png');
+    } catch (error) {
+      console.error('  ✗ Failed to generate default OG image:', error);
+      if (fs.existsSync(tempSvgPath)) fs.unlinkSync(tempSvgPath);
     }
   }
 

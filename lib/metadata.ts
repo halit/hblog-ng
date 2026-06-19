@@ -42,6 +42,9 @@ export function generatePageMetadata(node?: VaultNode, options?: PageMetadataOpt
     const url = options?.url ? `${siteUrl}${options.url}` : siteUrl;
     const type = options?.type || 'website';
     const keywords = options?.keywords || [];
+    // Pages without a node (homepage, collection listings, 404, etc.) fall back
+    // to the site-level OG card so they still get a large social image.
+    const image = options?.image || `${siteUrl}/images/og/default.png`;
 
     return {
       metadataBase,
@@ -61,13 +64,22 @@ export function generatePageMetadata(node?: VaultNode, options?: PageMetadataOpt
         url,
         siteName: siteTitle,
         locale: 'en_US',
+        images: [
+          {
+            url: image,
+            width: 1200,
+            height: 630,
+            alt: title,
+            type: 'image/png',
+          },
+        ],
       },
       twitter: {
-        card: options?.image ? 'summary_large_image' : 'summary',
+        card: 'summary_large_image',
         title,
         description,
         creator: config.authorName,
-        ...(options?.image && { images: [options.image] }),
+        images: [image],
       },
       alternates: {
         canonical: url,
