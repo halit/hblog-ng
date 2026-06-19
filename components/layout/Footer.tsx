@@ -11,9 +11,11 @@ import { VaultNode } from '@/types/vault';
 interface FooterProps {
   rx: number;
   tx: number;
+  rxActive: boolean;
+  txActive: boolean;
 }
 
-const Footer: React.FC<FooterProps> = ({ rx, tx }) => {
+const Footer: React.FC<FooterProps> = ({ rx, tx, rxActive, txActive }) => {
   const [blogProject, setBlogProject] = React.useState<VaultNode | undefined>(undefined);
 
   // Initialize blog project lookup on mount to prevent hydration mismatch
@@ -70,11 +72,11 @@ const Footer: React.FC<FooterProps> = ({ rx, tx }) => {
       <div className="flex gap-4 items-center min-w-[200px] justify-end">
         <div className="flex justify-between w-24">
           <span>RX:</span>
-          <span className={rx > 100 ? 'text-defense' : 'text-gray-500'}>{formatBytes(rx)}/s</span>
+          <span className={rxActive ? 'text-defense' : 'text-gray-500'}>{formatBytes(rx)}/s</span>
         </div>
         <div className="flex justify-between w-24">
           <span>TX:</span>
-          <span className={tx > 100 ? 'text-offense' : 'text-gray-500'}>{formatBytes(tx)}/s</span>
+          <span className={txActive ? 'text-offense' : 'text-gray-500'}>{formatBytes(tx)}/s</span>
         </div>
       </div>
     </footer>

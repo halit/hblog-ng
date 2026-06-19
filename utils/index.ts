@@ -83,7 +83,8 @@ export const calculateReadingTime = (text: string): string => {
  */
 export const formatBytes = (bytes: number): string => {
   if (!bytes || Number.isNaN(bytes)) return '0 B';
-  return prettyBytes(bytes);
+  // Cap the fraction at 2 digits so the readout stays "5.1" / "5.24", never "5.123456".
+  return prettyBytes(bytes, { maximumFractionDigits: 2 });
 };
 
 /**

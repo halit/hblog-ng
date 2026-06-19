@@ -28,7 +28,7 @@ function NavigationEvents({ setIsPageLoading }: { setIsPageLoading: (v: boolean)
 }
 
 export default function AppLayout({ children }: LayoutProps) {
-  const { rx, tx } = useNetworkStats();
+  const { rx, tx, rxActive, txActive } = useNetworkStats();
   const [isPageLoading, setIsPageLoading] = useState(false);
 
   const {
@@ -96,7 +96,7 @@ export default function AppLayout({ children }: LayoutProps) {
         {children}
       </main>
       <div className="print:hidden">
-        <Footer rx={rx} tx={tx} />
+        <Footer rx={rx} tx={tx} rxActive={rxActive} txActive={txActive} />
       </div>
       <div className="print:hidden">
         <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
