@@ -1,10 +1,8 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { formatBytes } from '@/utils';
 import { config } from '@/config/env';
-import { getPathFromId } from '@/lib/routing';
 import { getVaultDataSync } from '@/lib/vault-cache';
 import { VaultNode } from '@/types/vault';
 
@@ -49,24 +47,34 @@ const Footer: React.FC<FooterProps> = ({ rx, tx, rxActive, txActive }) => {
     }
   }, []);
 
-  // Single source of truth: package.json version, injected via next.config.mjs
+  // Single source of truth: package.json version, imported in config/env.ts.
   const version = config.appVersion;
   const projectName = blogProject?.title || 'hblog-ng';
+
+  // Repo link: handle from env (NEXT_PUBLIC_GITHUB_HANDLE), repo from the
+  // project node's `github` field, normalized to an absolute URL. Falls back
+  // to the handle + project name so the link is correct before the node loads.
+  const githubUrl = (() => {
+    const handle = config.githubHandle;
+    const repo = blogProject?.github?.trim();
+    if (!repo) return `https://github.com/${handle}/${projectName}`;
+    if (repo.startsWith('http')) return repo;
+    if (repo.startsWith('github.com/')) return `https://${repo}`;
+    if (repo.includes('/')) return `https://github.com/${repo}`;
+    return `https://github.com/${handle}/${repo}`;
+  })();
 
   return (
     <footer className="fixed bottom-0 w-full bg-[#050505] border-t border-gray-800 py-1 px-4 text-[10px] font-mono text-gray-500 flex justify-between items-center z-50 h-8">
       <div className="flex items-center gap-4">
-        {blogProject ? (
-          <Link
-            href={getPathFromId(blogProject.id, blogProject)}
-            prefetch={false}
-            className="text-gray-500 hover:text-defense transition-colors"
-          >
-            {projectName} v{version}
-          </Link>
-        ) : (
-          <span>hblog-ng v{version}</span>
-        )}
+        <a
+          href={githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gray-500 hover:text-defense transition-colors"
+        >
+          {projectName} v{version}
+        </a>
       </div>
       <div className="flex-1"></div>
       <div className="flex gap-4 items-center min-w-[200px] justify-end">
