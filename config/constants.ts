@@ -3,6 +3,7 @@ export type { VaultNode } from '../types/vault';
 
 // Import type for use in this file
 import type { VaultNode } from '../types/vault';
+import { config } from './env';
 
 // Fallback data for development only (when vault.json is not available)
 // In production, this should never be used - data comes from vault.json
@@ -189,7 +190,7 @@ By using [[IDA Pro]], we can identify the entry point redirection that occurs du
     updated: '2024-02-20T09:15:00Z',
     stack: ['Python', 'UART', 'JTAG', 'Offensive'],
     description: 'Automated firmware extraction framework.',
-    github: 'github.com/halitalptekin/chimera',
+    github: `github.com/${config.githubHandle}/chimera`,
     stars: 1240,
     forks: 342,
     cover_image:
@@ -205,7 +206,7 @@ By using [[IDA Pro]], we can identify the entry point redirection that occurs du
     updated: '2023-09-01T11:00:00Z',
     stack: ['Go', 'Redis', 'Entropy', 'Defensive'],
     description: 'Real-time C2 domain tracking.',
-    github: 'github.com/halitalptekin/netwatch',
+    github: `github.com/${config.githubHandle}/netwatch`,
     stars: 856,
     forks: 112,
     content: `A distributed sensor network that monitors newly registered domains for patterns matching known [[APT Groups]]. using entropy analysis.`,

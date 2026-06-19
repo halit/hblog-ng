@@ -66,6 +66,8 @@ public/signatures/
 public/videos/
 public/search-index.json
 public/vault.json
+public/humans.txt
+public/.well-known/security.txt
 
 # Vault
 vault/

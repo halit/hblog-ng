@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -13,6 +14,21 @@ import { getVaultPathWithOverride } from './lib/vault-path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const GITHUB_HANDLE = process.env.NEXT_PUBLIC_GITHUB_HANDLE;
+
+// Resolve a frontmatter `github` value into a protocol-less `github.com/owner/repo`
+// string (the form the UI prepends `https://` to). A bare repo name (`chimera`)
+// is owned by the configured handle; `owner/repo` and full URLs pass through.
+function normalizeGithub(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim().replace(/^https?:\/\//, '');
+  if (!trimmed) return undefined;
+  if (trimmed.includes('github.com/')) return trimmed.replace(/^.*?github\.com\//, 'github.com/');
+  // `owner/repo` keeps its explicit owner; a bare `repo` uses the env handle.
+  if (trimmed.includes('/')) return `github.com/${trimmed}`;
+  return GITHUB_HANDLE ? `github.com/${GITHUB_HANDLE}/${trimmed}` : `github.com/${trimmed}`;
+}
 
 // Interface for raw frontmatter from YAML
 interface RawFrontmatter {
@@ -232,7 +248,7 @@ async function parseVault(vaultPath: string, assetsDir?: string): Promise<VaultN
             signature: typeof signature === 'string' ? signature.trim() : undefined,
             content: processedBody.trim(),
             icon: frontmatter.icon,
-            github: frontmatter.github,
+            github: normalizeGithub(frontmatter.github),
             published_in: frontmatter.published_in || frontmatter.publication,
             publication: frontmatter.published_in || frontmatter.publication,
             references: Array.isArray(frontmatter.references)
