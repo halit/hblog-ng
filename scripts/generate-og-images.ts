@@ -63,6 +63,59 @@ function generateSpectrumSVG(distribution: SpectrumDistribution): string {
   return svg;
 }
 
+// Greedy word-boundary wrap. Unlike the shared wrapText (which hard-breaks
+// mid-word when a line overflows), this keeps words intact and only splits a
+// single word that is itself longer than the line — titles read badly when
+// broken mid-word (e.g. "Post-Quantu" / "m").
+function wrapTitleLines(text: string, maxChars: number): string[] {
+  const lines: string[] = [];
+  let cur = '';
+  for (const word of text.split(/\s+/).filter(Boolean)) {
+    if (cur === '') {
+      cur = word;
+    } else if (cur.length + 1 + word.length <= maxChars) {
+      cur = `${cur} ${word}`;
+    } else {
+      lines.push(cur);
+      cur = word;
+    }
+    while (cur.length > maxChars) {
+      lines.push(cur.slice(0, maxChars));
+      cur = cur.slice(maxChars);
+    }
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
+// Pick the largest title font size (and the wrapped lines) that fits the title
+// into at most two lines within the usable title width. The title group is
+// translated to x=100, so ~1000px is safe before the right edge of the 1200px
+// canvas; JetBrains Mono advances ~0.6em per glyph regardless of case.
+function fitTitle(title: string): { fontSize: number; lines: string[] } {
+  const USABLE_WIDTH = 1000;
+  const CHAR_RATIO = 0.6;
+  const MAX_LINES = 2;
+
+  for (const fontSize of [64, 58, 52, 46, 40]) {
+    const maxChars = Math.floor(USABLE_WIDTH / (fontSize * CHAR_RATIO));
+    const lines = wrapTitleLines(title, maxChars);
+    if (lines.length <= MAX_LINES) {
+      return { fontSize, lines };
+    }
+  }
+
+  // Title is long even at the smallest size: keep the first two lines and
+  // ellipsize the second so nothing overflows.
+  const fontSize = 40;
+  const maxChars = Math.floor(USABLE_WIDTH / (fontSize * CHAR_RATIO));
+  const lines = wrapTitleLines(title, maxChars).slice(0, MAX_LINES);
+  if (lines.length === MAX_LINES) {
+    lines[MAX_LINES - 1] = `${lines[MAX_LINES - 1].slice(0, maxChars - 1).trimEnd()}…`;
+  }
+  return { fontSize, lines };
+}
+
 // --- Main Generation Logic ---
 
 function generateOGImageSVG(
@@ -80,12 +133,16 @@ function generateOGImageSVG(
   const spectrum = calculateSpectrum(contentSignal, node);
   const spectrumSVG = generateSpectrumSVG(spectrum);
 
-  // Wrap title (max 2 lines, ~30-35 chars per line for font size 64)
-  const titleLines = wrapText(title, 35, 2);
+  // Fit the title into at most 2 lines. JetBrains Mono is monospace (~0.6em
+  // advance), so the usable width sets a hard cap on characters per line at a
+  // given size. Start at 64px and step down only if the title needs a 3rd line,
+  // so short titles stay big and long ones shrink instead of overflowing.
+  const { fontSize: titleFontSize, lines: titleLines } = fitTitle(title);
+  const titleLineHeight = Math.round(titleFontSize * 1.17);
   const titleGroupSVG = titleLines
     .map(
       (line, idx) =>
-        `<tspan x="${idx === 0 ? 0 : 0}" dy="${idx === 0 ? 0 : 75}">${escapeXML(line)}</tspan>`,
+        `<tspan x="0" dy="${idx === 0 ? 0 : titleLineHeight}">${escapeXML(line)}</tspan>`,
     )
     .join('');
 
@@ -102,8 +159,9 @@ function generateOGImageSVG(
     )
     .join('');
 
-  // Calculate adaptive Y for description group
-  const titleHeight = titleLines.length === 2 ? 75 + 64 : 64; // Height for 2 lines or 1 line (64 is approx font size)
+  // Calculate adaptive Y for description group. Title baseline sits at y=110;
+  // each extra line adds titleLineHeight, then leave the font's height + a buffer.
+  const titleHeight = (titleLines.length - 1) * titleLineHeight + titleFontSize;
   const descriptionY = 110 + titleHeight + 20; // 110 (title base Y) + title height + 20px buffer
 
   // Generate particles (random positions)
@@ -136,6 +194,7 @@ function generateOGImageSVG(
     .replace('{{TYPE_LABEL}}', typeLabel)
     .replace('{{SPECTRUM_BARS}}', spectrumSVG)
     .replace(/{{TITLE_GROUP}}/g, titleGroupSVG) // Global replace for all glitch layers
+    .replace(/{{TITLE_FONT_SIZE}}/g, titleFontSize.toString())
     .replace('{{DESCRIPTION_Y}}', descriptionY.toString())
     .replace('{{DESCRIPTION_GROUP}}', descriptionGroupSVG);
 

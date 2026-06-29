@@ -64,7 +64,7 @@
         <text x="80" y="22" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="bold" fill="url(#accent)" text-anchor="middle" letter-spacing="2">{{TYPE_LABEL}}</text>
     </g>
     
-    <!-- Glitch Title (Multi-layer for effect) --><g font-family="'JetBrains Mono', monospace" font-size="64" font-weight="800" style="text-transform: uppercase;">
+    <!-- Glitch Title (Multi-layer for effect) --><g font-family="'JetBrains Mono', monospace" font-size="{{TITLE_FONT_SIZE}}" font-weight="800" style="text-transform: uppercase;">
        <!-- Cyan Channel --><text x="-2" y="110" fill="#00e5ff" opacity="0.5">{{TITLE_GROUP}}</text>
        <!-- Red Channel --><text x="2" y="110" fill="#ff0055" opacity="0.5">{{TITLE_GROUP}}</text>
        <!-- White Main Channel --><text x="0" y="110" fill="#ffffff" class="text-glow">{{TITLE_GROUP}}</text>
