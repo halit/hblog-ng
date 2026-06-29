@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 
 export interface Command {
   id: string;
@@ -15,9 +15,22 @@ interface UseCommandHandlerOptions {
 }
 
 export function useCommandHandler({ commands, enabled = true }: UseCommandHandlerOptions) {
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (!enabled) return;
+  // Keep the latest commands/enabled in refs so the listener can read them
+  // without being re-created. `commands` is a fresh array on every render of
+  // the caller (e.g. AppLayout re-renders ~8x/sec from the network-stats
+  // ticker), so binding the listener to those values would detach and
+  // re-attach it constantly. Attaching once and reading through refs keeps a
+  // single, stable listener alive.
+  const commandsRef = useRef(commands);
+  const enabledRef = useRef(enabled);
+  useEffect(() => {
+    commandsRef.current = commands;
+    enabledRef.current = enabled;
+  });
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!enabledRef.current) return;
 
       // Check if user is typing in an input/textarea
       const target = e.target as HTMLElement;
@@ -26,7 +39,7 @@ export function useCommandHandler({ commands, enabled = true }: UseCommandHandle
       }
 
       // Find matching command
-      const matchingCommand = commands.find((cmd) => {
+      const matchingCommand = commandsRef.current.find((cmd) => {
         const parts = cmd.shortcut
           .toLowerCase()
           .split('+')
@@ -55,14 +68,9 @@ export function useCommandHandler({ commands, enabled = true }: UseCommandHandle
         e.preventDefault();
         matchingCommand.handler();
       }
-    },
-    [commands, enabled],
-  );
-
-  useEffect(() => {
-    if (!enabled) return;
+    };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown, enabled]);
+  }, []);
 }

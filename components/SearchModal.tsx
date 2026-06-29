@@ -1,23 +1,24 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Search, X, FileText, FolderKanban, BookOpen, ArrowRight } from 'lucide-react';
-import { useLazyVaultData } from '../hooks/useLazyVaultData';
+import { useLazyVaultData } from '@/hooks/useLazyVaultData';
 import { useRouter } from 'next/navigation';
-import { getPathFromId } from '../lib/routing';
+import { getPathFromId } from '@/lib/routing';
 import {
   performSearch,
   EnhancedSearchResult,
   loadSearchIndex,
   createSearchRegex,
-} from '../lib/search-client';
+} from '@/lib/search-client';
+import { getNodeKeywords } from '@/utils/keywords';
 
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
+const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [vaultData, isLoading, loadVaultData] = useLazyVaultData();
@@ -107,11 +108,21 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
     [router, onClose, query],
   );
 
+  // Keep handler inputs in a ref so the keydown listener can be attached once
+  // per open/close instead of re-subscribing on every render (AppLayout
+  // re-renders ~8x/sec, which would otherwise churn the listener).
+  const latest = useRef({ results, selectedIndex, onClose, handleSelectResult });
+  useEffect(() => {
+    latest.current = { results, selectedIndex, onClose, handleSelectResult };
+  });
+
   // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      const { results, selectedIndex, onClose, handleSelectResult } = latest.current;
+
       if (e.key === 'Escape') {
         onClose();
         return;
@@ -141,7 +152,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, results, selectedIndex, onClose, handleSelectResult]);
+  }, [isOpen]);
 
   // Simple highlight helper using regex for display
   const highlightMatch = (text: string, searchTerm: string) => {
@@ -263,7 +274,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 
                         {(node.keywords || node.stack) && (
                           <div className="flex flex-wrap gap-1 mb-1">
-                            {[...(node.keywords || node.stack || [])]
+                            {[...getNodeKeywords(node)]
                               .slice(0, 5)
                               .map((keyword: string, kIdx: number) => (
                                 <span

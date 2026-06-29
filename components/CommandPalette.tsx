@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Command } from '../hooks/useCommandHandler';
+import React, { useState, useEffect, useRef } from 'react';
+import { Command } from '@/hooks/useCommandHandler';
 
 interface CommandPaletteProps {
   isOpen: boolean;
@@ -9,7 +9,7 @@ interface CommandPaletteProps {
   commands: Command[];
 }
 
-const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, commands }) => {
+const CommandPalette = ({ isOpen, onClose, commands }: CommandPaletteProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
@@ -19,10 +19,20 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, comman
     }
   }, [isOpen]);
 
+  // Keep handler inputs in a ref so the keydown listener is attached once per
+  // open/close rather than re-subscribing on every render (AppLayout rebuilds
+  // `commands` and `onClose` each render, which would otherwise churn it).
+  const latest = useRef({ commands, selectedIndex, onClose });
+  useEffect(() => {
+    latest.current = { commands, selectedIndex, onClose };
+  });
+
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      const { commands, selectedIndex, onClose } = latest.current;
+
       if (e.key === 'Escape') {
         onClose();
         return;
@@ -50,7 +60,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, comman
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, commands, selectedIndex, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
