@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { parseBibtex } from '../lib/bibtex';
-import { BibtexEntry } from '../lib/bibtex-utils';
+import { parseBibtex } from '@/lib/bibtex';
+import { BibtexEntry } from '@/lib/bibtex-utils';
 
-import { getVaultPath } from './lib/vault-path';
+import { getVaultPath } from './pipeline/vault-path';
 
 async function main() {
   const vaultPath = getVaultPath();

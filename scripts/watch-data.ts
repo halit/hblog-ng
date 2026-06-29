@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import debounce from 'just-debounce-it';
-import { getVaultPath } from './lib/vault-path.js';
+import { getVaultPath } from './pipeline/vault-path.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -1,14 +1,14 @@
-import 'dotenv/config';
+import './pipeline/load-env';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
 import crypto from 'crypto';
-import { VaultNode } from '../types/vault';
-import { loadVaultData } from '../lib/vault';
-import { calculateSpectrum, SpectrumDistribution } from '../utils';
-import { wrapText, escapeXML, ensureDir } from './lib/utils';
-import { config } from '../config/env';
+import { VaultNode } from '@/types/vault';
+import { loadVaultData } from '@/lib/vault';
+import { calculateSpectrum, SpectrumDistribution } from '@/utils';
+import { wrapText, escapeXML, ensureDir } from './pipeline/utils';
+import { config } from '@/config/env';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -4,10 +4,10 @@ import { promises as fsPromises } from 'fs';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import * as openpgp from 'openpgp';
-import 'dotenv/config';
+import './pipeline/load-env';
 
-import { getVaultPath } from './lib/vault-path';
-import { VaultProcessor } from './lib/processor';
+import { getVaultPath } from './pipeline/vault-path';
+import { VaultProcessor } from './pipeline/processor';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

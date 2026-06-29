@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import fs, { readdirSync, statSync, existsSync, mkdirSync } from 'fs';
 import { join, extname, basename } from 'path';
-import { getVaultPath } from './lib/vault-path';
+import { getVaultPath } from './pipeline/vault-path';
 
 interface OptimizeOptions {
   quality?: number;

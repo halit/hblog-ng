@@ -1,9 +1,9 @@
-import 'dotenv/config';
+import './pipeline/load-env';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getVaultPath } from './lib/vault-path.js';
-import { config } from '../config/env';
+import { getVaultPath } from './pipeline/vault-path.js';
+import { config } from '@/config/env';
 import pkg from '../package.json' with { type: 'json' };
 
 const __filename = fileURLToPath(import.meta.url);

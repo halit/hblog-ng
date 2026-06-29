@@ -1,5 +1,5 @@
-import { VaultNode } from '../../types/vault';
-import { extractInternalLinks, linkMatchesNode } from '../../lib/routing';
+import { VaultNode } from '@/types/vault';
+import { extractInternalLinks, linkMatchesNode } from '@/lib/routing';
 
 export function processRelationships(nodes: VaultNode[]): VaultNode[] {
   // Build map of nodes first

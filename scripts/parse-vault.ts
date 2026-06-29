@@ -1,16 +1,17 @@
-import 'dotenv/config';
+import './pipeline/load-env';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { promises as fsPromises } from 'fs';
-import { VaultNode } from '../types/vault';
-import { processCoverImage } from './lib/assets';
-import { processRelationships } from './lib/graph';
+import { VaultNode, type VaultFrontmatter } from '@/types/vault';
+import { processCoverImage } from './pipeline/assets';
+import { processRelationships } from './pipeline/graph';
 import MiniSearch from 'minisearch';
-import { ensureDir, copyFileSafe } from './lib/utils';
-import { VaultProcessor } from './lib/processor';
+import { ensureDir, copyFileSafe } from './pipeline/utils';
+import { SEARCH_INDEX_CONFIG } from '../config/search';
+import { VaultProcessor } from './pipeline/processor';
 
-import { getVaultPathWithOverride } from './lib/vault-path';
+import { getVaultPathWithOverride } from './pipeline/vault-path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,39 +31,8 @@ function normalizeGithub(value: unknown): string | undefined {
   return GITHUB_HANDLE ? `github.com/${GITHUB_HANDLE}/${trimmed}` : `github.com/${trimmed}`;
 }
 
-// Interface for raw frontmatter from YAML
-interface RawFrontmatter {
-  type?: string;
-  cover_image?: string;
-  image?: string;
-  signature?: string;
-  created?: string | number;
-  date?: string | number;
-  description?: string;
-  aliases?: string[];
-  stack?: string[];
-  icon?: string;
-  github?: string;
-  published_in?: string;
-  publication?: string;
-  references?: string | string[];
-  bibtex?: string;
-  year?: string;
-  url?: string;
-  link?: string;
-  exclude_from_graph?: boolean;
-  disable_toc?: boolean;
-  status?: string;
-  stars?: number;
-  forks?: number;
-  avatar?: string;
-  skills?: { name: string; level: number; type: 'offense' | 'defense' }[];
-  languages?: { name: string; level: number }[];
-  timeline?: { date: string; title: string; description?: string; icon?: string }[];
-  offensive?: number;
-  defensive?: number;
-  misc?: number;
-}
+// Use shared frontmatter type (includes legacy fields for migration)
+type RawFrontmatter = VaultFrontmatter;
 
 async function parseVault(vaultPath: string, assetsDir?: string): Promise<VaultNode[]> {
   const nodes: VaultNode[] = [];
@@ -243,8 +213,11 @@ async function parseVault(vaultPath: string, assetsDir?: string): Promise<VaultN
             updated: stats.mtime.toISOString().split('T')[0],
             description: frontmatter.description,
             aliases: frontmatter.aliases,
-            keywords: hashtags,
-            stack: frontmatter.stack,
+            // Canonical + legacy kept for one cycle (helpers in utils/keywords prefer canonical)
+            keywords: frontmatter.keywords?.length
+              ? frontmatter.keywords
+              : (frontmatter.stack ?? hashtags ?? []),
+            stack: frontmatter.stack ?? frontmatter.keywords ?? hashtags,
             signature: typeof signature === 'string' ? signature.trim() : undefined,
             content: processedBody.trim(),
             icon: frontmatter.icon,
@@ -337,14 +310,7 @@ async function main() {
 
   // Generate MiniSearch index from full nodes (content is needed for indexing)
   console.log('Generating search index...');
-  const miniSearch = new MiniSearch({
-    fields: ['title', 'content', 'description', 'keywords', 'stack'], // fields to index for full-text search
-    storeFields: ['id', 'title', 'description', 'type', 'keywords'], // fields to return with search results
-    searchOptions: {
-      boost: { title: 2, keywords: 1.5, stack: 1.5, description: 1.2 },
-      fuzzy: 0.2,
-    },
-  });
+  const miniSearch = new MiniSearch(SEARCH_INDEX_CONFIG);
 
   // Add documents to the index
   // We need to make sure keywords/stack arrays are joined for indexing if MiniSearch expects strings,

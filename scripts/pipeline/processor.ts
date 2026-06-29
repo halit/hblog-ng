@@ -1,3 +1,13 @@
+/**
+ * Build-time only data pipeline helpers.
+ *
+ * These live under scripts/pipeline/ (renamed from scripts/lib/) to avoid
+ * confusion with the runtime app lib/.
+ *
+ * Safe to import pure utilities from top-level @/lib, @/utils, @/config, @/types.
+ * Side effects, asset writes, and signing contracts stay here.
+ * VaultProcessor is shared with sign-posts for byte-identical output.
+ */
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkFrontmatter from 'remark-frontmatter';
