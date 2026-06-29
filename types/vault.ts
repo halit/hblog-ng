@@ -44,3 +44,41 @@ export interface VaultNode {
   defensive?: number;
   misc?: number;
 }
+
+/**
+ * Raw frontmatter parsed from vault markdown (used by build pipeline).
+ * Includes legacy field support for migration.
+ */
+export interface VaultFrontmatter {
+  type?: string;
+  cover_image?: string;
+  image?: string;
+  signature?: string;
+  created?: string | number;
+  date?: string | number;
+  description?: string;
+  aliases?: string[];
+  stack?: string[];
+  keywords?: string[];
+  icon?: string;
+  github?: string;
+  published_in?: string;
+  publication?: string;
+  references?: string | string[];
+  bibtex?: string;
+  year?: string;
+  url?: string;
+  link?: string;
+  exclude_from_graph?: boolean;
+  disable_toc?: boolean;
+  status?: string;
+  stars?: number;
+  forks?: number;
+  avatar?: string;
+  skills?: { name: string; level: number; type: 'offense' | 'defense' }[];
+  languages?: { name: string; level: number }[];
+  timeline?: { date: string; title: string; description?: string; icon?: string }[];
+  offensive?: number;
+  defensive?: number;
+  misc?: number;
+}
