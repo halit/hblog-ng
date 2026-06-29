@@ -1,8 +1,8 @@
 // Re-export types for backward compatibility
-export type { VaultNode } from '../types/vault';
+export type { VaultNode } from '@/types/vault';
 
 // Import type for use in this file
-import type { VaultNode } from '../types/vault';
+import type { VaultNode } from '@/types/vault';
 import { config } from './env';
 
 // Fallback data for development only (when vault.json is not available)

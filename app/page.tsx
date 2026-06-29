@@ -1,7 +1,7 @@
 import { loadVaultData } from '@/lib/vault';
 import { getNodeSortDate } from '@/utils';
 import { generatePageMetadata, generateSchemaMarkup } from '@/lib/metadata';
-import Home from '@/components/pages/Home';
+import Home from '@/components/views/Home';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = generatePageMetadata();

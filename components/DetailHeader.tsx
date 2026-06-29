@@ -5,20 +5,26 @@ import { Share2, Lock, Network, Github, ExternalLink, Quote } from 'lucide-react
 import KeywordTags from '@/components/ui/KeywordTags';
 import { VaultNode } from '@/types/vault';
 import { getPathFromId } from '@/lib/routing';
+import {
+  getNodeKeywords,
+  getPublication,
+  hasReferences,
+  getPrimaryReference,
+} from '@/utils/keywords';
 
-interface UnifiedDetailHeaderProps {
+interface DetailHeaderProps {
   node: VaultNode;
   setSignatureOpen?: (sig: string) => void;
   setBibtexOpen?: (bibtex: string) => void;
   setShareOpen: (url: string, title: string, description?: string) => void;
 }
 
-export default function UnifiedDetailHeader({
+export default function DetailHeader({
   node,
   setSignatureOpen,
   setBibtexOpen,
   setShareOpen,
-}: UnifiedDetailHeaderProps) {
+}: DetailHeaderProps) {
   const router = useRouter();
 
   const handleKeywordClick = (keyword: string) => {
@@ -29,11 +35,10 @@ export default function UnifiedDetailHeader({
   const itemUrl = `${siteUrl}${getPathFromId(node.id, node)}`;
 
   // Research specific logic
+  const pub = getPublication(node);
   const paperUrl =
-    node.type === 'research' &&
-    node.publication &&
-    (node.publication.startsWith('http://') || node.publication.startsWith('https://'))
-      ? node.publication
+    node.type === 'research' && pub && (pub.startsWith('http://') || pub.startsWith('https://'))
+      ? pub
       : undefined;
   const paperLink = node.type === 'research' ? node.url || node.link : undefined;
 
@@ -45,9 +50,7 @@ export default function UnifiedDetailHeader({
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs text-gray-500 font-mono uppercase">PUBLISHED:</span>
               <span className="text-gray-400 font-mono uppercase text-xs">
-                {paperUrl
-                  ? 'Research Paper'
-                  : node.published_in || node.publication || 'Research Paper'}
+                {paperUrl ? 'Research Paper' : pub || 'Research Paper'}
               </span>
             </div>
           )}
@@ -55,11 +58,8 @@ export default function UnifiedDetailHeader({
             <span className="text-xs text-gray-500 font-mono uppercase flex-shrink-0">
               KEYWORDS:
             </span>
-            {(node.keywords || node.stack) && (node.keywords || node.stack)!.length > 0 && (
-              <KeywordTags
-                keywords={(node.keywords || node.stack)!}
-                onKeywordClick={handleKeywordClick}
-              />
+            {getNodeKeywords(node).length > 0 && (
+              <KeywordTags keywords={getNodeKeywords(node)} onKeywordClick={handleKeywordClick} />
             )}
           </div>
         </div>
@@ -126,23 +126,17 @@ export default function UnifiedDetailHeader({
               <ExternalLink size={12} /> PAPER URL
             </a>
           )}
-          {node.type === 'research' &&
-            setBibtexOpen &&
-            ((node.references && node.references.length > 0) ||
-              (node.bibtex && node.bibtex !== '|')) && (
-              <button
-                onClick={() => {
-                  if (node.references && node.references.length > 0) {
-                    setBibtexOpen(node.references[0]);
-                  } else if (node.bibtex && node.bibtex !== '|') {
-                    setBibtexOpen(node.bibtex);
-                  }
-                }}
-                className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-gray-300 px-3 py-1.5 text-xs font-bold border border-gray-800 transition-colors"
-              >
-                <Quote size={12} /> CITATION
-              </button>
-            )}
+          {node.type === 'research' && setBibtexOpen && hasReferences(node) && (
+            <button
+              onClick={() => {
+                const ref = getPrimaryReference(node);
+                if (ref) setBibtexOpen(ref);
+              }}
+              className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-gray-300 px-3 py-1.5 text-xs font-bold border border-gray-800 transition-colors"
+            >
+              <Quote size={12} /> CITATION
+            </button>
+          )}
         </div>
       </div>
     </div>

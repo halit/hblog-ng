@@ -3,6 +3,7 @@ import { VaultNode } from '@/types/vault';
 import { getPathFromId } from './routing';
 import { config } from '@/config/env';
 import { stripMarkdownToText } from '@/utils';
+import { getPublication, getNodeKeywords } from '@/utils/keywords';
 
 export interface PageMetadataOptions {
   title?: string;
@@ -116,7 +117,7 @@ export function generatePageMetadata(node?: VaultNode, options?: PageMetadataOpt
   // Generate correct page URL based on node type
   const pageUrl = `${siteUrl}${getPathFromId(node.id, node)}`;
 
-  const keywords = node.keywords || node.stack || [];
+  const keywords = getNodeKeywords(node);
   const articleType =
     node.type === 'blog' ? 'article' : node.type === 'research' ? 'article' : 'website';
   const publishedTime =
@@ -261,7 +262,7 @@ export function generateSchemaMarkup(node?: VaultNode): string {
   }
 
   // Add keywords/tags
-  const keywords = node.keywords || node.stack || [];
+  const keywords = getNodeKeywords(node);
   if (keywords.length > 0) {
     schema.keywords = keywords.join(', ');
   }
@@ -273,7 +274,7 @@ export function generateSchemaMarkup(node?: VaultNode): string {
 
   // Add specific fields for research papers
   if (node.type === 'research') {
-    const publication = node.published_in || node.publication;
+    const publication = getPublication(node);
     if (publication) {
       schema.isPartOf = {
         '@type': 'Periodical',

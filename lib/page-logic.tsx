@@ -9,8 +9,8 @@ import {
   generateBreadcrumbSchema,
 } from '@/lib/metadata';
 import { extractSlugFromId, findNodeBySlugOrId } from '@/lib/routing';
-import UnifiedCollectionPage from '@/components/UnifiedCollectionPage';
-import UnifiedPostDetailWrapper from '@/components/UnifiedPostDetailWrapper';
+import CollectionView from '@/components/CollectionPage';
+import DetailWrapper from '@/components/DetailWrapper';
 
 export async function getStaticParamsForType(type: VaultNode['type']) {
   const nodes = getNodesByType(type, false);
@@ -75,7 +75,7 @@ export function createCollectionPage(cfg: CollectionConfig) {
     return (
       <>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaMarkup }} />
-        <UnifiedCollectionPage
+        <CollectionView
           title={cfg.title}
           description={cfg.description}
           items={items}
@@ -132,7 +132,7 @@ export function createDetailPage(cfg: DetailConfig) {
       <>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaMarkup }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbMarkup }} />
-        <UnifiedPostDetailWrapper activeNode={activeNode} connectedNodes={relatedNodes} />
+        <DetailWrapper activeNode={activeNode} connectedNodes={relatedNodes} />
       </>
     );
   }

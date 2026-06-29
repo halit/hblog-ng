@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { loadVaultData } from '@/lib/vault';
+import { getNodeKeywords } from '@/utils/keywords';
 
 export const dynamic = 'force-static';
 import { getPathFromId } from '@/lib/routing';
@@ -82,7 +83,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Keywords
   const allKeywords = new Set<string>();
   publicPages.forEach((node) => {
-    const keywords = (node.keywords || node.stack || []) as string[];
+    const keywords = getNodeKeywords(node);
     keywords.forEach((keyword) => {
       allKeywords.add(keyword.toLowerCase());
     });

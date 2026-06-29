@@ -9,6 +9,7 @@ import KeywordTags from '@/components/ui/KeywordTags';
 import SpectrumMeter from '@/components/ui/SpectrumMeter';
 import { calculateSpectrum, getNodeSortDate } from '@/utils';
 import { getIconComponent } from '@/utils/icons';
+import { getNodeKeywords } from '@/utils/keywords';
 import BlockHeader from '@/components/ui/BlockHeader';
 
 interface QueryRendererProps {
@@ -102,10 +103,8 @@ const QueryRenderer: React.FC<QueryRendererProps> = ({ query }) => {
     // Filter by keywords
     if (params.keywords && params.keywords.length > 0) {
       filtered = filtered.filter((node) => {
-        if (!node.keywords && !node.stack) return false;
-        const nodeKeywords = [...(node.keywords || []), ...(node.stack || [])].map((k) =>
-          k.toLowerCase(),
-        );
+        const nodeKeywords = getNodeKeywords(node);
+        if (nodeKeywords.length === 0) return false;
         return params.keywords!.some((k) => nodeKeywords.includes(k));
       });
     }
@@ -210,9 +209,9 @@ const QueryRenderer: React.FC<QueryRendererProps> = ({ query }) => {
                   <div className="mt-auto pt-3 border-t border-gray-800/50 flex justify-between items-center gap-4">
                     {/* Keywords */}
                     <div className="flex-1 min-w-0 relative">
-                      {(p.keywords || p.stack) && (p.keywords || p.stack)!.length > 0 && (
+                      {getNodeKeywords(p).length > 0 && (
                         <KeywordTags
-                          keywords={p.keywords || p.stack || []}
+                          keywords={getNodeKeywords(p)}
                           onKeywordClick={(keyword) =>
                             router.push(`/keywords/${encodeURIComponent(keyword.toLowerCase())}`)
                           }

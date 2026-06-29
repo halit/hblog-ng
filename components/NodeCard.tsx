@@ -9,6 +9,7 @@ import { VaultNode } from '@/types/vault';
 import { NavLink } from '@/components/ui/NavLink';
 import KeywordTags from '@/components/ui/KeywordTags';
 import { getIconComponent, getDefaultIconName } from '@/utils/icons';
+import { getNodeKeywords } from '@/utils/keywords';
 
 interface NodeCardProps {
   node: VaultNode;
@@ -97,10 +98,10 @@ const NodeCard: React.FC<NodeCardProps> = ({ node, viewMode = 'grid', showType =
               {node.description}
             </p>
 
-            {(node.keywords || node.stack) && (node.keywords || node.stack)!.length > 0 && (
+            {getNodeKeywords(node).length > 0 && (
               <div className="flex flex-wrap gap-2 pr-4 md:pr-40">
                 <KeywordTags
-                  keywords={(node.keywords || node.stack)!}
+                  keywords={getNodeKeywords(node)}
                   onKeywordClick={handleKeywordClick}
                   className="flex flex-wrap gap-2"
                   sortByLength={true}
@@ -162,9 +163,9 @@ const NodeCard: React.FC<NodeCardProps> = ({ node, viewMode = 'grid', showType =
           <div className="mt-auto pt-3 border-t border-gray-800/50 flex justify-between items-center gap-4">
             {/* Keywords */}
             <div className="flex-1 min-w-0 relative">
-              {(node.keywords || node.stack) && (node.keywords || node.stack)!.length > 0 && (
+              {getNodeKeywords(node).length > 0 && (
                 <KeywordTags
-                  keywords={node.keywords || node.stack || []}
+                  keywords={getNodeKeywords(node)}
                   onKeywordClick={handleKeywordClick}
                   className="flex items-center gap-1"
                   gap={4}
@@ -238,10 +239,10 @@ const NodeCard: React.FC<NodeCardProps> = ({ node, viewMode = 'grid', showType =
           {node.description || node.content}
         </p>
 
-        {(node.keywords || node.stack) && (node.keywords || node.stack)!.length > 0 && (
+        {getNodeKeywords(node).length > 0 && (
           <div className="pt-4 border-t border-gray-800 mt-auto">
             <KeywordTags
-              keywords={(node.keywords || node.stack)!}
+              keywords={getNodeKeywords(node)}
               onKeywordClick={handleKeywordClick}
               className="flex flex-wrap gap-2"
               sortByLength={true}

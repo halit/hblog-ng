@@ -8,7 +8,7 @@ import BlockHeader from '@/components/ui/BlockHeader';
 import FileAttachment from '@/components/content/FileAttachment';
 import VideoPlayer from '@/components/content/VideoPlayer';
 import ImageWithZoom from '@/components/content/ImageWithZoom';
-import LinkPreview from '../LinkPreview';
+import LinkPreview from '@/components/LinkPreview';
 import TerminalBlock from '@/components/content/TerminalBlock';
 import { smoothScrollToId, generateHeadingId } from '@/utils';
 import { getPathFromId } from '@/lib/routing';
@@ -53,13 +53,13 @@ interface MarkdownContentProps {
   compact?: boolean;
 }
 
-export const MarkdownContent: React.FC<MarkdownContentProps> = ({
+export const MarkdownContent = ({
   tokens,
   vaultData,
   referenceMap,
   onReferenceClick,
   compact = false,
-}) => {
+}: MarkdownContentProps) => {
   return (
     <>
       {tokens.map((token, index) => (
@@ -76,13 +76,19 @@ export const MarkdownContent: React.FC<MarkdownContentProps> = ({
   );
 };
 
-const TokenRenderer: React.FC<{
+const TokenRenderer = ({
+  token,
+  vaultData,
+  referenceMap,
+  onReferenceClick,
+  compact,
+}: {
   token: Token;
   vaultData: VaultNode[];
   referenceMap: Map<string, { number: number; label?: string; id: string }>;
   onReferenceClick: (num: number) => void;
   compact?: boolean;
-}> = ({ token, vaultData, referenceMap, onReferenceClick, compact }) => {
+}) => {
   switch (token.type) {
     case 'heading': {
       const heading = token as Tokens.Heading;
@@ -389,12 +395,17 @@ const TokenRenderer: React.FC<{
   }
 };
 
-const InlineRenderer: React.FC<{
+const InlineRenderer = ({
+  tokens,
+  vaultData,
+  referenceMap,
+  onReferenceClick,
+}: {
   tokens: Token[];
   vaultData: VaultNode[];
   referenceMap: Map<string, { number: number; label?: string; id: string }>;
   onReferenceClick: (num: number) => void;
-}> = ({ tokens, vaultData, referenceMap, onReferenceClick }) => {
+}) => {
   if (!tokens) return null;
   return (
     <>

@@ -1,6 +1,6 @@
 import { loadVaultData } from '@/lib/vault';
 import { generatePageMetadata, generateSchemaMarkup } from '@/lib/metadata';
-import About from '@/components/pages/About';
+import About from '@/components/views/About';
 import { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {

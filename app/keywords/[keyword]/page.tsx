@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllKeywords, getNodesByKeyword } from '@/lib/vault';
-import UnifiedCollectionPage from '@/components/UnifiedCollectionPage';
+import CollectionPage from '@/components/CollectionPage';
 
 interface KeywordPageProps {
   params: Promise<{ keyword: string }>;
@@ -37,7 +37,7 @@ export default async function KeywordPage({ params }: KeywordPageProps) {
   }
 
   return (
-    <UnifiedCollectionPage
+    <CollectionPage
       title={decodedKeyword}
       description={`${matchingContent.length} results found across projects, research, and posts.`}
       items={matchingContent}

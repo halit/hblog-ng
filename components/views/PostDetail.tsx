@@ -9,7 +9,7 @@ import ScrollToTop from '@/components/layout/ScrollToTop';
 import TableOfContents from '@/components/content/TableOfContents';
 import { calculateSpectrum } from '@/utils';
 import { VaultNode } from '@/types/vault';
-import UnifiedDetailHeader from '@/components/UnifiedDetailHeader';
+import DetailHeader from '@/components/DetailHeader';
 import { getIconComponent, getDefaultIconName } from '@/utils/icons';
 import NodeCard from '@/components/NodeCard';
 import SpectrumMeter from '@/components/ui/SpectrumMeter';
@@ -230,8 +230,8 @@ const PostDetail: React.FC<PostDetailProps> = ({
       </div>
 
       <div className="max-w-6xl mx-auto px-6 mt-8 relative w-full min-h-[50vh]">
-        {/* Unified Header */}
-        <UnifiedDetailHeader
+        {/* Detail Header */}
+        <DetailHeader
           node={activeNode}
           setShareOpen={setShareOpen}
           setSignatureOpen={setSignatureOpen}

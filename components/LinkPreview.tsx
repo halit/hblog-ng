@@ -2,10 +2,10 @@
 
 import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { useLazyVaultData } from '../hooks/useLazyVaultData';
-import { getIconComponent } from '../utils/icons';
+import { useLazyVaultData } from '@/hooks/useLazyVaultData';
+import { getIconComponent } from '@/utils/icons';
 import SpectrumMeter from '@/components/ui/SpectrumMeter';
-import { calculateSpectrum } from '../utils';
+import { calculateSpectrum } from '@/utils';
 
 interface LinkPreviewProps {
   id: string; // The ID or title of the target node
@@ -13,7 +13,7 @@ interface LinkPreviewProps {
   className?: string;
 }
 
-const LinkPreview: React.FC<LinkPreviewProps> = ({ id, children, className }) => {
+const LinkPreview = ({ id, children, className }: LinkPreviewProps) => {
   // Use lazy vault data to avoid loading on every page render if not needed.
   // The hook will only fetch if we call loadVaultData.
   // However, for LinkPreview to work on hover, we need data.

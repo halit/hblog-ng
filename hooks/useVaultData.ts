@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { VaultNode } from '../types/vault';
-import { getVaultData, getVaultDataSync } from '../lib/vault-cache';
-import { getWindowGlobals } from '../lib/window-globals';
+import { VaultNode } from '@/types/vault';
+import { getVaultData, getVaultDataSync } from '@/lib/vault-cache';
+import { getWindowGlobals } from '@/lib/window-globals';
 
 /**
  * Hook to load vault data dynamically (uses global cache)

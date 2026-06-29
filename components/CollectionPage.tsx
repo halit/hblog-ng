@@ -7,7 +7,7 @@ import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { getNodeSortDate } from '@/utils';
 import NodeCard from '@/components/NodeCard';
 
-interface UnifiedCollectionPageProps {
+interface CollectionPageProps {
   title: string;
   description: string;
   items: VaultNode[];
@@ -18,13 +18,13 @@ interface UnifiedCollectionPageProps {
 
 type ViewMode = 'grid' | 'list' | 'years';
 
-const UnifiedCollectionPage: React.FC<UnifiedCollectionPageProps> = ({
+const CollectionPage = ({
   title,
   description,
   items,
   type,
   isKeywordPage,
-}) => {
+}: CollectionPageProps) => {
   const [viewMode, setViewMode] = useState<ViewMode>(type === 'project' ? 'grid' : 'list');
 
   // Sort items using robust sorting logic (created > year > updated)
@@ -172,4 +172,4 @@ const UnifiedCollectionPage: React.FC<UnifiedCollectionPageProps> = ({
   );
 };
 
-export default UnifiedCollectionPage;
+export default CollectionPage;

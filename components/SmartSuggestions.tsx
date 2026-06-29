@@ -3,13 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useVaultData } from '../hooks/useVaultData';
-import { performSearch, EnhancedSearchResult } from '../lib/search-client';
+import { useVaultData } from '@/hooks/useVaultData';
+import { performSearch, EnhancedSearchResult } from '@/lib/search-client';
 import { Search } from 'lucide-react';
-import { calculateSpectrum } from '../utils';
+import { calculateSpectrum } from '@/utils';
 import SpectrumMeter from '@/components/ui/SpectrumMeter';
-import { getIconComponent } from '../utils/icons';
+import { getIconComponent } from '@/utils/icons';
 import KeywordTags from '@/components/ui/KeywordTags';
+import { getNodeKeywords } from '@/utils/keywords';
 import BlockHeader from '@/components/ui/BlockHeader';
 import { getPathFromId } from '@/lib/routing';
 
@@ -17,7 +18,7 @@ interface SmartSuggestionsProps {
   className?: string;
 }
 
-const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({ className }) => {
+const SmartSuggestions = ({ className }: SmartSuggestionsProps) => {
   const pathname = usePathname();
   const vaultData = useVaultData();
   const [suggestions, setSuggestions] = useState<EnhancedSearchResult[]>([]);
@@ -113,14 +114,13 @@ const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({ className }) => {
                   {/* Bottom: Keywords (Left) + Spectrum (Right) */}
                   <div className="mt-auto pt-3 border-t border-gray-800/50 flex justify-between items-center gap-4">
                     <div className="flex-1 min-w-0 relative">
-                      {(result.node.keywords || result.node.stack) &&
-                        (result.node.keywords || result.node.stack)!.length > 0 && (
-                          <KeywordTags
-                            keywords={result.node.keywords || result.node.stack || []}
-                            className="flex items-center gap-1"
-                            gap={4}
-                          />
-                        )}
+                      {getNodeKeywords(result.node).length > 0 && (
+                        <KeywordTags
+                          keywords={getNodeKeywords(result.node)}
+                          className="flex items-center gap-1"
+                          gap={4}
+                        />
+                      )}
                     </div>
 
                     <SpectrumMeter distribution={spectrum} className="w-[60px] flex-shrink-0" />

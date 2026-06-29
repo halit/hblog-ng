@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { VaultNode } from '../types/vault';
-import { getVaultData, getVaultDataSync } from '../lib/vault-cache';
+import { VaultNode } from '@/types/vault';
+import { getVaultData, getVaultDataSync } from '@/lib/vault-cache';
 
 /**
  * Lazy hook to load vault data only when needed (e.g., for search)

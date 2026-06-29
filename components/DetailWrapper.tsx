@@ -1,19 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import PostDetail from '@/components/pages/PostDetail';
+import PostDetail from '@/components/views/PostDetail';
 import { SignatureModal, BibtexModal, ShareModal } from '@/components/Modals';
 import { VaultNode } from '@/types/vault';
 
-interface UnifiedPostDetailWrapperProps {
+interface DetailWrapperProps {
   activeNode: VaultNode;
   connectedNodes: VaultNode[];
 }
 
-export default function UnifiedPostDetailWrapper({
-  activeNode,
-  connectedNodes,
-}: UnifiedPostDetailWrapperProps) {
+export default function DetailWrapper({ activeNode, connectedNodes }: DetailWrapperProps) {
   const [signatureOpen, setSignatureOpen] = useState<string | null>(null);
   const [bibtexOpen, setBibtexOpen] = useState<string | null>(null);
   const [shareData, setShareData] = useState<{

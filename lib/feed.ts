@@ -2,6 +2,7 @@ import { loadVaultData } from '@/lib/vault';
 import { getPathFromId } from '@/lib/routing';
 import { markdownToRssHtml } from '@/lib/rss-markdown';
 import { byNewest, stripMarkdownToText } from '@/utils';
+import { getNodeKeywords } from '@/utils/keywords';
 import { config } from '@/config/env';
 import { NextResponse } from 'next/server';
 import { formatAtomFeed, formatRssFeed, formatJsonFeed } from './feed-utils';
@@ -91,7 +92,7 @@ export async function getFeedData(): Promise<FeedData> {
           name: config.authorName,
           email: config.authorEmail,
         },
-        tags: node.keywords || node.stack || [],
+        tags: getNodeKeywords(node),
         image: imageUrl,
       };
     }),
