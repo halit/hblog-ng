@@ -1,5 +1,6 @@
 import MiniSearch, { SearchResult as MiniSearchResult } from 'minisearch';
-import { VaultNode } from '../types/vault';
+import { VaultNode } from '@/types/vault';
+import { SEARCH_INDEX_CONFIG, CLIENT_SEARCH_OPTIONS } from '@/config/search';
 
 // Helper to lazily load the search index
 let searchIndex: MiniSearch | null = null;
@@ -29,13 +30,9 @@ export const loadSearchIndex = async (): Promise<MiniSearch> => {
       const indexData = await response.text();
 
       searchIndex = MiniSearch.loadJSON(indexData, {
-        fields: ['title', 'content', 'description', 'keywords', 'stack'],
-        storeFields: ['id', 'title', 'description', 'type', 'keywords'],
-        searchOptions: {
-          boost: { title: 2, keywords: 1.5, stack: 1.5, description: 1.2 },
-          fuzzy: 0.2,
-          prefix: true,
-        },
+        fields: SEARCH_INDEX_CONFIG.fields,
+        storeFields: SEARCH_INDEX_CONFIG.storeFields,
+        searchOptions: CLIENT_SEARCH_OPTIONS,
       });
 
       return searchIndex;

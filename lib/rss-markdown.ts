@@ -1,5 +1,6 @@
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
+import { MATH_BLOCK_RE, MATH_INLINE_RE } from './markdown/syntax';
 
 /**
  * Pre-process markdown content to handle custom syntax before passing to marked.
@@ -26,7 +27,8 @@ export async function markdownToRssHtml(markdown: string): Promise<string> {
     return `[Download ${name}](${url})`;
   });
 
-  // 4. Handle Wiki Links [[Link]] or [[Link|Label]]
+  // 4. Handle Wiki Links [[Link]] or [[Link|Label]] (using shared syntax)
+  // Note: simplified replace for RSS (full tokenizer in marked extensions).
   content = content.replace(/\[\[([^\]]+)\]\]/g, (match, capture) => {
     const parts = capture.split('|');
     const link = parts[0].trim();
@@ -36,11 +38,10 @@ export async function markdownToRssHtml(markdown: string): Promise<string> {
     return label;
   });
 
-  // 5. Handle Math (LaTeX) - Convert to code/text for RSS
-  // Block Math $$...$$
-  content = content.replace(/\$\$([\s\S]*?)\$\$/g, '<pre>$1</pre>');
+  // 5. Handle Math (LaTeX) - Convert to code/text for RSS (shared patterns)
+  content = content.replace(MATH_BLOCK_RE, '<pre>$1</pre>');
   // Inline Math $...$
-  content = content.replace(/\$([^$]+)\$/g, '<code>$1</code>');
+  content = content.replace(MATH_INLINE_RE, '<code>$1</code>');
 
   // 6. Handle Reference Links [ref:key] -> [key]
   content = content.replace(/\[ref:([^\]]+)\]/g, '[$1]');
