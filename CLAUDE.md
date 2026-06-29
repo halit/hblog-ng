@@ -18,6 +18,8 @@ To keep sessions fast, **do not scan these** unless a task explicitly requires i
 
 Source lives in `app/`, `components/`, `config/`, `hooks/`, `lib/`, `scripts/`,
 `types/`, and `utils/`. `components/` is grouped by concern — `layout/`,
+`views/` (page bodies like Home/About; previously `pages/`), `ui/`, `markdown/`,
+`modals/`, `graph/`.
 `content/` (Markdown block renderers), `ui/` (small reusables), `graph/`,
 `markdown/`, `modals/`, `pages/` — with feature-level components at the root.
 Reuse `components/modals/Modal.tsx` (modal shell) and
@@ -33,7 +35,7 @@ Next.js (App Router, static export) and deployed to Cloudflare Pages. There is
 **no server runtime** — everything is pre-rendered at build time.
 
 Vault content is **not committed to this repo**. It lives in a separate Obsidian
-vault, resolved by `scripts/lib/vault-path.ts` in this order: (1) the `VAULT_PATH`
+vault, resolved by `scripts/pipeline/vault-path.ts` in this order: (1) the `VAULT_PATH`
 env var, (2) a `vault/` directory if present (the devcontainer bind-mounts one —
 see `.devcontainer/devcontainer.json`), (3) the bundled `example-vault/` demo so a
 fresh clone still renders. Always resolve the vault via `getVaultPath()` /
@@ -88,11 +90,12 @@ research`), `spectrum` (`offensive | defensive | misc`, drives graph color),
 - **`lib/page-logic.tsx`** — `createCollectionPage()` and `createDetailPage()`
   factories back the `app/{posts,projects,research}` routes; each route file just
   spreads the result. Add a new content type here.
-- **`lib/markdown/extensions.ts`** +
-  **`components/content/MarkdownRenderer.tsx`** + **`components/markdown/*`**
+- **`lib/markdown/extensions.ts`** + `lib/markdown/syntax.ts` +
+  **`components/markdown/MarkdownRenderer.tsx`** + **`components/markdown/*`**
   — custom `marked` extensions: `[[WikiLinks]]`, `![[embeds]]`,
   `$math$`/`$$math$$` (KaTeX), Mermaid fences, `[ref:key]` citations.
-  `lib/rss-markdown.ts` is a separate string renderer for feeds.
+  `lib/rss-markdown.ts` is a separate string renderer for feeds. Shared syntax regexes live in syntax.ts.
+  (Renderers consolidated; content/ subdir largely folded into markdown/.)
 - **`components/graph/*`** (incl. `NeuralGraph.tsx`) + **`hooks/graph/*`**
   — canvas-based D3 force simulation (not SVG). Config in `config/graph.ts`;
   colors `offense: #ff0055`, `defense: #00e5ff`.
@@ -114,8 +117,11 @@ manifest}.ts` cover the rest of SEO/PWA.
 - **Asset pipeline** — `scripts/optimize-images.ts` converts raster images to
   **WebP** (Sharp, fit 1920×1920) into `public/images/`;
   `scripts/generate-og-images.ts` renders the 1200×630 OG PNG per note.
-- **`utils/index.ts`** — shared helpers incl. `byNewest` (sort comparator) and
-  `stripMarkdownToText` (plain-text excerpts). Prefer these over re-implementing.
+- **`utils/`** — split for clarity: `dates.ts` (getNodeSortDate, byNewest), `text.ts`
+  (stripMarkdownToText, generateHeadingId), `metrics.ts` (spectrum, readingTime, formatBytes),
+  `keywords.ts` (getNodeKeywords + legacy helpers getPublication etc.).
+  `index.ts` is a barrel for backward compat. Prefer submodule imports where possible.
+  `icons.tsx`, `emoji.ts`, `video.ts` live alongside.
 
 ### Client vs server components
 
@@ -133,7 +139,10 @@ data is loaded in Server Components via `lib/vault.ts`.
   `generateStaticParams`.
 - **Images**: `next/image` with explicit dimensions; optimization is disabled
   (`images.unoptimized`) because this is a static export.
-- **Imports**: React/Next → third-party → local components → utils/lib.
+- **Imports**: React/Next → third-party → local components → utils/lib. Use `@/` everywhere; relative only for true siblings within a feature folder.
+- Legacy frontmatter (`stack`, `publication`, `bibtex`) normalized at parse time.
+  Use `getNodeKeywords`, `getPublication`, `getPrimaryReference` from `@/utils/keywords`.
+- `scripts/pipeline/` contains build-only code (was `scripts/lib/`).
 - **Naming**: components `PascalCase.tsx`, hooks/utils `camelCase.ts`,
   constants `UPPER_SNAKE_CASE`.
 
