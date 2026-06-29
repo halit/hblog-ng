@@ -30,6 +30,32 @@ export function formatBibtexEntry(entry: BibtexEntry): string {
 }
 
 /**
+ * Resolve a clickable URL for a reference. Falls back across the common BibTeX
+ * places a link can hide: an explicit `url`, the `howpublished` field (often a
+ * `\url{...}` that parse-bibtex has already turned into an `<a href="...">`),
+ * or a `doi` (rendered through doi.org).
+ */
+export function getReferenceUrl(entry: BibtexEntry): string {
+  const { fields } = entry;
+
+  if (fields.url) return fields.url;
+
+  if (fields.howpublished) {
+    const href = /href=["']([^"']+)["']/.exec(fields.howpublished);
+    if (href) return href[1];
+    const bare = /https?:\/\/\S+/.exec(fields.howpublished);
+    if (bare) return bare[0];
+  }
+
+  if (fields.doi) {
+    const doi = fields.doi.replace(/^https?:\/\/(dx\.)?doi\.org\//i, '');
+    return `https://doi.org/${doi}`;
+  }
+
+  return '';
+}
+
+/**
  * Generate raw BibTeX string from entry
  */
 export function generateBibtexString(entry: BibtexEntry): string {

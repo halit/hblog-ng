@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ExternalLink } from 'lucide-react';
 import { useVaultData } from '@/hooks/useVaultData';
 import { createSearchRegex } from '@/lib/search-client';
-import { formatBibtexEntry } from '@/lib/bibtex-client';
+import { formatBibtexEntry, getReferenceUrl } from '@/lib/bibtex-client';
 import referencesData from '@/data/references.json';
 import { Marked } from 'marked';
 import { obsidianExtensions } from '@/lib/markdown/extensions';
@@ -63,7 +63,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
       if (bibtexEntry && !seenRefs.has(refKey)) {
         seenRefs.add(refKey);
         const formatted = formatBibtexEntry(bibtexEntry);
-        const url = bibtexEntry.fields.url || '';
+        const url = getReferenceUrl(bibtexEntry);
 
         const ref: Reference = {
           id: refKey,

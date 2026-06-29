@@ -1,7 +1,7 @@
 import { BibtexEntry } from './bibtex-utils';
 
 export type { BibtexEntry } from './bibtex-utils';
-export { formatBibtexEntry, generateBibtexString } from './bibtex-utils';
+export { formatBibtexEntry, generateBibtexString, getReferenceUrl } from './bibtex-utils';
 
 import referencesData from '@/data/references.json';
 
